@@ -44,36 +44,14 @@ export const Consultation: React.FC<ConsultationProps> = ({ onComplete }) => {
             </div>
           </div>
           
-          <div className="relative grid grid-cols-2 gap-4">
-            <div className="space-y-4 pt-12">
-              <div className="bg-white rounded-2xl overflow-hidden shadow-xl aspect-[4/5] relative">
-                <img src="https://images.unsplash.com/photo-1503467913725-8484b65b0715?q=80&w=600&auto=format&fit=crop" className="w-full h-full object-cover" alt="Marcus" />
-                <div className="absolute bottom-4 left-4 text-white">
-                  <h3 className="font-bold text-xl">Marcus V.</h3>
-                  <p className="text-xs opacity-80 uppercase tracking-widest font-semibold">Tech Founder & Speaker</p>
-                </div>
-              </div>
-              <div className="bg-[#161616] p-6 rounded-2xl text-white">
-                <span className="iconify text-[#c0563b] text-4xl mb-4" data-icon="solar:chart-square-bold-duotone"></span>
-                <h4 className="text-lg font-bold mb-1">98% Retention</h4>
-                <p className="text-xs opacity-60">Automated scheduling leads to loyalty.</p>
-              </div>
+          <div className="relative">
+            <div className="bg-white rounded-3xl overflow-hidden shadow-2xl">
+              <img src="https://images.unsplash.com/photo-1585747860715-2ba37e788b70?q=80&w=800&auto=format&fit=crop" className="w-full h-[500px] object-cover" alt="Professional Barbershop" />
             </div>
-            <div className="space-y-4">
-              <div className="bg-white rounded-2xl overflow-hidden shadow-xl aspect-[1/1] relative">
-                <img src="https://images.unsplash.com/photo-1534030347209-467a5b0ad3e6?q=80&w=600&auto=format&fit=crop" className="w-full h-full object-cover" alt="James" />
-                <div className="absolute bottom-4 left-4 text-white">
-                  <h3 className="font-bold text-xl">James C.</h3>
-                  <p className="text-xs opacity-80 uppercase tracking-widest font-semibold">Bestselling Author</p>
-                </div>
-              </div>
-              <div className="bg-white rounded-2xl overflow-hidden shadow-xl aspect-[3/4] relative">
-                <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=600&auto=format&fit=crop" className="w-full h-full object-cover" alt="David" />
-                <div className="absolute bottom-4 left-4 text-white">
-                  <h3 className="font-bold text-xl">David P.</h3>
-                  <p className="text-xs opacity-80 uppercase tracking-widest font-semibold">Investor</p>
-                </div>
-              </div>
+            <div className="absolute -bottom-6 -left-6 bg-[#161616] p-6 rounded-2xl text-white shadow-xl">
+              <span className="iconify text-[#c0563b] text-4xl mb-4" data-icon="solar:chart-square-bold-duotone"></span>
+              <h4 className="text-lg font-bold mb-1">98% Retention</h4>
+              <p className="text-xs opacity-60">Automated scheduling leads to loyalty.</p>
             </div>
           </div>
         </section>
