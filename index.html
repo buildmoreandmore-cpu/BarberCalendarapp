@@ -1,0 +1,60 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cadence - Style Strategist</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+    <style>
+      :root {
+        --bg-cream: #f3f2ee;
+        --text-dark: #161616;
+        --brand-primary: #c0563b;
+        --brand-primary-hover: #a64932;
+        --brand-primary-soft: #fbeee0;
+      }
+      body {
+        font-family: 'Inter', sans-serif;
+        background-color: var(--bg-cream);
+        color: var(--text-dark);
+      }
+      .font-serif {
+        font-family: 'Playfair+Display', serif;
+      }
+      .bg-brand-primary { background-color: var(--brand-primary); }
+      .text-brand-primary { color: var(--brand-primary); }
+      .border-brand-primary { border-color: var(--brand-primary); }
+      .bg-brand-primary-soft { background-color: var(--brand-primary-soft); }
+      
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #e5e4e0;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #ccc;
+        border-radius: 4px;
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "lucide-react": "https://esm.sh/lucide-react@^0.562.0",
+    "@google/genai": "https://esm.sh/@google/genai@^1.34.0",
+    "react": "https://esm.sh/react@^19.2.3",
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/"
+  }
+}
+</script>
+</head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>
