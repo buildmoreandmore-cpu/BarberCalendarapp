@@ -75,12 +75,12 @@ export const Consultation: React.FC<ConsultationProps> = ({ onComplete }) => {
           <div className="max-w-7xl mx-auto px-6 mt-20 flex gap-6 overflow-x-auto pb-8 scrollbar-hide">
              {[
                { name: "Sloane J.", role: "Master Stylist", img: "https://images.unsplash.com/photo-1621605815971-fbc98d665033?q=80&w=400&auto=format&fit=crop" },
-               { name: "Pat Flynn", role: "Entrepreneur & Podcaster", img: "https://images.unsplash.com/photo-1596003906949-67221c37955a?q=80&w=400&auto=format&fit=crop" },
+               { name: "Marcus T.", role: "Shop Owner", img: "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?q=80&w=400&auto=format&fit=crop" },
                { name: "Elena M.", role: "Professional Groomer", img: "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?q=80&w=400&auto=format&fit=crop" },
-               { name: "Justin Welsh", role: "Solopreneur", img: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=400&auto=format&fit=crop" }
+               { name: "David K.", role: "Senior Barber", img: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=400&auto=format&fit=crop" }
              ].map((person, i) => (
                <div key={i} className="min-w-[280px] bg-[#1a1a1a] p-4 rounded-3xl border border-white/5 group">
-                  <div className="aspect-[4/5] rounded-2xl overflow-hidden mb-4 grayscale group-hover:grayscale-0 transition-all duration-500">
+                  <div className="aspect-[4/5] rounded-2xl overflow-hidden mb-4 grayscale">
                     <img src={person.img} className="w-full h-full object-cover" alt={person.name} />
                   </div>
                   <h4 className="text-white font-bold text-lg">{person.name}</h4>
