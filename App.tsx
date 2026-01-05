@@ -109,11 +109,11 @@ const App: React.FC = () => {
           <div className="flex items-center gap-4">
              {viewMode === 'landing' ? (
                <>
-                 <button 
+                 <button
                   onClick={() => setViewMode('barber')}
                   className="text-xs font-black uppercase text-[#161616] px-4 hover:text-[#c0563b] transition-colors"
                 >
-                  Barber Login
+                  Demo
                 </button>
                  <Button variant="primary" onClick={() => setViewMode('landing')}>Start free trial</Button>
                </>
