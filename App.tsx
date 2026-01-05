@@ -165,46 +165,46 @@ const App: React.FC = () => {
                  <span className="iconify text-[#c0563b] text-2xl" data-icon="solar:scissors-bold-duotone"></span>
                  <span className="text-xl font-black text-[#161616] tracking-tighter">Cadence</span>
                </div>
-               <p className="text-[#555] max-w-xs font-medium leading-relaxed">The premium operating system for barbers. Scale your chair with AI-driven retention.</p>
-               <div className="flex gap-4 opacity-30 grayscale items-center">
-                  <span className="iconify text-4xl" data-icon="logos:google-icon"></span>
-                  <span className="iconify text-4xl" data-icon="logos:stripe"></span>
-                  <span className="iconify text-4xl" data-icon="logos:notion-icon"></span>
-                  <span className="iconify text-4xl" data-icon="logos:shopify"></span>
+               <p className="text-[#555] max-w-xs font-medium leading-relaxed">Smart scheduling for barbers. Keep your chair full and your clients coming back.</p>
+               <div className="flex gap-5 opacity-50 items-center">
+                  <span className="iconify text-3xl text-[#161616]" data-icon="solar:calendar-bold-duotone"></span>
+                  <span className="iconify text-3xl text-[#161616]" data-icon="solar:bell-bing-bold-duotone"></span>
+                  <span className="iconify text-3xl text-[#161616]" data-icon="solar:chart-2-bold-duotone"></span>
+                  <span className="iconify text-3xl text-[#161616]" data-icon="solar:users-group-rounded-bold-duotone"></span>
                </div>
              </div>
-             
+
              <div className="grid grid-cols-2 md:grid-cols-3 gap-16">
                 <div className="space-y-4">
-                   <h5 className="text-[10px] font-black uppercase tracking-widest text-[#161616]">Platform</h5>
+                   <h5 className="text-[10px] font-black uppercase tracking-widest text-[#161616]">For Barbers</h5>
                    <ul className="space-y-2 text-xs font-bold text-[#555]">
-                      <li><a href="#" className="hover:text-[#c0563b]">Features</a></li>
-                      <li><a href="#" className="hover:text-[#c0563b]">API</a></li>
-                      <li><a href="#" className="hover:text-[#c0563b]">Security</a></li>
+                      <li><a href="#" className="hover:text-[#c0563b]">Smart Scheduling</a></li>
+                      <li><a href="#" className="hover:text-[#c0563b]">Client Management</a></li>
+                      <li><a href="#" className="hover:text-[#c0563b]">Auto Reminders</a></li>
                    </ul>
                 </div>
                 <div className="space-y-4">
-                   <h5 className="text-[10px] font-black uppercase tracking-widest text-[#161616]">Company</h5>
+                   <h5 className="text-[10px] font-black uppercase tracking-widest text-[#161616]">Support</h5>
                    <ul className="space-y-2 text-xs font-bold text-[#555]">
-                      <li><a href="#" className="hover:text-[#c0563b]">About</a></li>
-                      <li><a href="#" className="hover:text-[#c0563b]">Pricing</a></li>
-                      <li><a href="#" className="hover:text-[#c0563b]">Partners</a></li>
+                      <li><a href="#" className="hover:text-[#c0563b]">Help Center</a></li>
+                      <li><a href="#" className="hover:text-[#c0563b]">Contact Us</a></li>
+                      <li><a href="#" className="hover:text-[#c0563b]">FAQ</a></li>
                    </ul>
                 </div>
                 <div className="space-y-4">
                    <h5 className="text-[10px] font-black uppercase tracking-widest text-[#161616]">Legal</h5>
                    <ul className="space-y-2 text-xs font-bold text-[#555]">
-                      <li><a href="#" className="hover:text-[#c0563b]">Privacy</a></li>
-                      <li><a href="#" className="hover:text-[#c0563b]">Terms</a></li>
+                      <li><a href="#" className="hover:text-[#c0563b]">Privacy Policy</a></li>
+                      <li><a href="#" className="hover:text-[#c0563b]">Terms of Service</a></li>
                    </ul>
                 </div>
              </div>
           </div>
           <div className="pt-12 border-t border-[#f3f2ee] flex justify-between items-center text-[10px] font-black uppercase tracking-widest text-[#ccc]">
-             <span>© 2024 Cadence Systems Inc.</span>
+             <span>© 2025 Cadence. Built for barbers.</span>
              <div className="flex gap-4">
-                <span className="iconify" data-icon="solar:hamburger-menu-bold-duotone"></span>
-                <span className="iconify" data-icon="solar:share-bold-duotone"></span>
+                <a href="#" className="hover:text-[#c0563b]"><span className="iconify" data-icon="solar:letter-bold-duotone"></span></a>
+                <a href="#" className="hover:text-[#c0563b]"><span className="iconify" data-icon="mdi:instagram"></span></a>
              </div>
           </div>
         </div>
