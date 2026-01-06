@@ -77,20 +77,52 @@ const UPCOMING_BOOKINGS: ClientRequest[] = [
 export const BarberDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'pending' | 'upcoming'>('pending');
   const [selectedClientId, setSelectedClientId] = useState<string | null>(null);
+  const [requests, setRequests] = useState<ClientRequest[]>(MOCK_REQUESTS);
+  const [approvedBookings, setApprovedBookings] = useState<ClientRequest[]>(UPCOMING_BOOKINGS);
+  const [showConfirmation, setShowConfirmation] = useState<string | null>(null);
 
-  const selectedClient = MOCK_REQUESTS.find(r => r.id === selectedClientId);
+  const selectedClient = requests.find(r => r.id === selectedClientId);
+
+  const handleApprove = (client: ClientRequest) => {
+    // Move from pending to approved
+    setRequests(prev => prev.filter(r => r.id !== client.id));
+    setApprovedBookings(prev => [...prev, { ...client, status: 'confirmed' }]);
+    setSelectedClientId(null);
+    setShowConfirmation(`Booking confirmed for ${client.name}`);
+    setTimeout(() => setShowConfirmation(null), 3000);
+  };
+
+  const handleDecline = (clientId: string) => {
+    const client = requests.find(r => r.id === clientId);
+    setRequests(prev => prev.filter(r => r.id !== clientId));
+    setSelectedClientId(null);
+    if (client) {
+      setShowConfirmation(`Booking declined for ${client.name}`);
+      setTimeout(() => setShowConfirmation(null), 3000);
+    }
+  };
+
+  const handleSuggestAlternative = (client: ClientRequest) => {
+    // For demo, just show a message
+    setShowConfirmation(`Alternative time suggestion sent to ${client.name}`);
+    setTimeout(() => setShowConfirmation(null), 3000);
+  };
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-12 space-y-12">
+      {/* Confirmation Toast */}
+      {showConfirmation && (
+        <div className="fixed top-24 right-6 bg-emerald-500 text-white px-6 py-4 rounded-2xl shadow-lg animate-fade-in-up z-50 flex items-center gap-3">
+          <span className="iconify text-2xl" data-icon="solar:check-circle-bold"></span>
+          <span className="font-bold">{showConfirmation}</span>
+        </div>
+      )}
+
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div>
-          <div className="text-slate-400 font-bold uppercase tracking-widest text-[10px] mb-1">Sunday, January 4</div>
+          <div className="text-slate-400 font-bold uppercase tracking-widest text-[10px] mb-1">Monday, January 6</div>
           <h1 className="text-5xl font-extrabold text-[#161616] tracking-tight">Good evening, James</h1>
-        </div>
-        <div className="flex gap-3">
-          <Button variant="outline" className="px-4"><span className="iconify" data-icon="solar:calendar-bold-duotone"></span> View Calendar</Button>
-          <Button variant="primary" className="px-8">+ New Manual Entry</Button>
         </div>
       </div>
 
@@ -119,23 +151,29 @@ export const BarberDashboard: React.FC = () => {
         {/* Left Column: List */}
         <div className="lg:col-span-5 space-y-6">
           <div className="flex items-center gap-2 bg-[#e5e4e0] p-1 rounded-full w-fit">
-            <button 
+            <button
               onClick={() => setActiveTab('pending')}
               className={`px-6 py-2 rounded-full text-xs font-bold transition-all ${activeTab === 'pending' ? 'bg-white text-[#161616] shadow-sm' : 'text-[#555] hover:text-[#161616]'}`}
             >
-              Pending Requests (3)
+              Pending Requests ({requests.length})
             </button>
-            <button 
+            <button
               onClick={() => setActiveTab('upcoming')}
               className={`px-6 py-2 rounded-full text-xs font-bold transition-all ${activeTab === 'upcoming' ? 'bg-white text-[#161616] shadow-sm' : 'text-[#555] hover:text-[#161616]'}`}
             >
-              Upcoming
+              Upcoming ({approvedBookings.length})
             </button>
           </div>
 
           <div className="space-y-3">
             {activeTab === 'pending' ? (
-              MOCK_REQUESTS.map(req => (
+              requests.length === 0 ? (
+                <div className="text-center py-12 text-slate-400">
+                  <span className="iconify text-4xl mb-3" data-icon="solar:check-circle-bold-duotone"></span>
+                  <p className="font-bold">All caught up!</p>
+                  <p className="text-sm">No pending requests</p>
+                </div>
+              ) : requests.map(req => (
                 <div 
                   key={req.id}
                   onClick={() => setSelectedClientId(req.id)}
@@ -162,9 +200,9 @@ export const BarberDashboard: React.FC = () => {
                     </div>
                   </div>
                 </div>
-              ))
+              )))
             ) : (
-              UPCOMING_BOOKINGS.map(req => (
+              approvedBookings.map(req => (
                 <div key={req.id} className="p-4 rounded-2xl border-2 border-transparent bg-white/50 flex items-center justify-between">
                   <div className="flex items-center gap-4">
                     <img src={req.avatar} className="w-12 h-12 rounded-xl object-cover" alt={req.name} />
@@ -236,10 +274,16 @@ export const BarberDashboard: React.FC = () => {
 
               {/* Actions */}
               <div className="pt-10 flex flex-col gap-3">
-                <Button variant="primary" className="py-5 text-lg">Approve Booking</Button>
+                <Button variant="primary" className="py-5 text-lg" onClick={() => handleApprove(selectedClient)}>
+                  Approve Booking
+                </Button>
                 <div className="grid grid-cols-2 gap-3">
-                  <Button variant="secondary" className="font-bold">Decline</Button>
-                  <Button variant="outline" className="font-bold">Suggest Alternative Time</Button>
+                  <Button variant="secondary" className="font-bold" onClick={() => handleDecline(selectedClient.id)}>
+                    Decline
+                  </Button>
+                  <Button variant="outline" className="font-bold" onClick={() => handleSuggestAlternative(selectedClient)}>
+                    Suggest Alternative
+                  </Button>
                 </div>
               </div>
             </div>

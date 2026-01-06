@@ -93,34 +93,12 @@ const App: React.FC = () => {
       {/* Navigation - Kit Style */}
       <nav className="py-8 px-6">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-12">
-            <div 
-              className="flex items-center gap-2 cursor-pointer" 
-              onClick={() => setViewMode('landing')}
-            >
-              <span className="iconify text-[#c0563b] text-4xl" data-icon="solar:scissors-bold-duotone"></span>
-              <span className="text-3xl font-black text-[#161616] tracking-tighter">Lineup</span>
-            </div>
-            
-            <div className="hidden lg:flex items-center gap-1 bg-[#e5e4e0] p-1.5 rounded-full">
-              {viewMode === 'barber' ? (
-                <>
-                  {['Dashboard', 'Calendar', 'Clients', 'Settings'].map(item => (
-                    <button key={item} className={`px-5 py-1.5 rounded-full text-xs font-bold transition-all ${item === 'Dashboard' ? 'bg-white text-[#161616]' : 'text-[#555] hover:bg-white/50'}`}>
-                      {item}
-                    </button>
-                  ))}
-                </>
-              ) : (
-                <>
-                  {['Features', 'Use Cases', 'Resources', 'Pricing'].map(item => (
-                    <button key={item} className="px-5 py-1.5 rounded-full text-xs font-bold text-[#161616] hover:bg-white transition-all">
-                      {item}
-                    </button>
-                  ))}
-                </>
-              )}
-            </div>
+          <div
+            className="flex items-center gap-2 cursor-pointer"
+            onClick={() => setViewMode('landing')}
+          >
+            <span className="iconify text-[#c0563b] text-4xl" data-icon="solar:scissors-bold-duotone"></span>
+            <span className="text-3xl font-black text-[#161616] tracking-tighter">Lineup</span>
           </div>
           
           <div className="flex items-center gap-4">

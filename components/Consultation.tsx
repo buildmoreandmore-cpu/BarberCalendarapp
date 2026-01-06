@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { UserProfile } from '../types';
 import { Button } from './Button';
 
@@ -12,6 +12,11 @@ interface ConsultationProps {
 
 export const Consultation: React.FC<ConsultationProps> = ({ onComplete, onClientDemo, onBarberDemo, startAtStep = 0 }) => {
   const [step, setStep] = useState(startAtStep); // 0 is Landing Page, 1+ is consultation
+
+  // Update step when startAtStep prop changes (for demo mode)
+  useEffect(() => {
+    setStep(startAtStep);
+  }, [startAtStep]);
   const [profile, setProfile] = useState<Partial<UserProfile>>({
     hairType: 'medium',
     growthRate: 'average',
