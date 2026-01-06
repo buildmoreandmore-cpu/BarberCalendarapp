@@ -10,11 +10,48 @@ interface DashboardProps {
   onRefresh: () => void;
 }
 
+// Fallback demo recommendations when API is unavailable
+const DEMO_RECOMMENDATIONS: RecommendedSlot[] = [
+  {
+    date: '2026-01-12',
+    reason: 'Perfect timing before your growth hits the messy stage',
+    score: 'optimal',
+    event: 'Weekly refresh'
+  },
+  {
+    date: '2026-01-15',
+    reason: 'Stay crisp for the upcoming weekend',
+    score: 'good',
+    event: 'Weekend prep'
+  },
+  {
+    date: '2026-01-19',
+    reason: 'Monday fresh start - great for work week',
+    score: 'good',
+    event: 'Work week'
+  },
+  {
+    date: '2026-01-23',
+    reason: 'Right on your natural 2-week cycle',
+    score: 'good',
+    event: 'Regular maintenance'
+  },
+  {
+    date: '2026-01-26',
+    reason: 'End of month shape-up',
+    score: 'good',
+    event: 'Monthly reset'
+  }
+];
+
 export const Dashboard: React.FC<DashboardProps> = ({ state, onRefresh }) => {
   const [commentary, setCommentary] = useState("Finding your perfect timing...");
   const [isCommentaryLoading, setIsCommentaryLoading] = useState(false);
   const [selectedSlot, setSelectedSlot] = useState<RecommendedSlot | null>(null);
   const [bookedSlot, setBookedSlot] = useState<RecommendedSlot | null>(null);
+
+  // Use API recommendations if available, otherwise use demo data
+  const recommendations = state.recommendations.length > 0 ? state.recommendations : DEMO_RECOMMENDATIONS;
 
   useEffect(() => {
     const fetchCommentary = async () => {
@@ -48,8 +85,8 @@ export const Dashboard: React.FC<DashboardProps> = ({ state, onRefresh }) => {
   };
 
   // Get the optimal recommendation
-  const optimalSlot = state.recommendations.find(r => r.score === 'optimal');
-  const otherSlots = state.recommendations.filter(r => r.score !== 'optimal');
+  const optimalSlot = recommendations.find(r => r.score === 'optimal');
+  const otherSlots = recommendations.filter(r => r.score !== 'optimal');
 
   return (
     <div className="max-w-4xl mx-auto px-6 py-12 space-y-8">
@@ -159,11 +196,11 @@ export const Dashboard: React.FC<DashboardProps> = ({ state, onRefresh }) => {
             ))}
             {[...Array(31)].map((_, i) => {
               const day = i + 1;
-              const isRecommended = state.recommendations.some(r => {
+              const isRecommended = recommendations.some(r => {
                 const recDay = new Date(r.date).getDate();
                 return recDay === day;
               });
-              const isOptimal = state.recommendations.some(r => {
+              const isOptimal = recommendations.some(r => {
                 const recDay = new Date(r.date).getDate();
                 return recDay === day && r.score === 'optimal';
               });
