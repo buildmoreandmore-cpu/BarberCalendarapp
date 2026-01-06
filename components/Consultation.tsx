@@ -7,10 +7,11 @@ interface ConsultationProps {
   onComplete: (profile: UserProfile) => void;
   onClientDemo?: () => void;
   onBarberDemo?: () => void;
+  startAtStep?: number;
 }
 
-export const Consultation: React.FC<ConsultationProps> = ({ onComplete, onClientDemo, onBarberDemo }) => {
-  const [step, setStep] = useState(0); // 0 is Landing Page
+export const Consultation: React.FC<ConsultationProps> = ({ onComplete, onClientDemo, onBarberDemo, startAtStep = 0 }) => {
+  const [step, setStep] = useState(startAtStep); // 0 is Landing Page, 1+ is consultation
   const [profile, setProfile] = useState<Partial<UserProfile>>({
     hairType: 'medium',
     growthRate: 'average',
@@ -49,7 +50,7 @@ export const Consultation: React.FC<ConsultationProps> = ({ onComplete, onClient
               Your clients, <br/> always <span className="italic">fresh.</span>
             </h1>
             <p className="text-xl text-[#161616] max-w-md leading-relaxed">
-              Cadence learns your clients' schedules, events, and lifestyle—then books them at the perfect time. <span className="font-bold underline decoration-[#c0563b] decoration-2 underline-offset-4">Full chairs, zero chasing.</span>
+              Lineup learns your clients' schedules, events, and lifestyle—then books them at the perfect time. <span className="font-bold underline decoration-[#c0563b] decoration-2 underline-offset-4">Full chairs, zero chasing.</span>
             </p>
             <div className="flex flex-col items-start gap-4">
               <Button variant="primary" onClick={nextStep} className="px-10 py-4 text-lg">
@@ -215,7 +216,7 @@ export const Consultation: React.FC<ConsultationProps> = ({ onComplete, onClient
                 Smart booking that learns your clients' lives.
               </h2>
               <p className="text-xl text-slate-300 mt-6 max-w-2xl mx-auto">
-                Cadence asks clients about their lifestyle—work, travel, events, how much they care about staying fresh—then automatically recommends when they should come in.
+                Lineup asks clients about their lifestyle—work, travel, events, how much they care about staying fresh—then automatically recommends when they should come in.
               </p>
             </div>
           </div>
@@ -373,7 +374,7 @@ export const Consultation: React.FC<ConsultationProps> = ({ onComplete, onClient
               </div>
               <div className="bg-white p-8 rounded-3xl shadow-sm border border-[#e5e4e0] space-y-4">
                  <span className="iconify text-4xl text-[#c0563b]" data-icon="solar:graph-up-bold-duotone"></span>
-                 <h3 className="text-xl font-extrabold">Recurring Cadence</h3>
+                 <h3 className="text-xl font-extrabold">Smart Scheduling</h3>
                  <p className="text-slate-600 text-sm">Track and optimize each client's natural booking rhythm over time.</p>
               </div>
            </div>
@@ -386,7 +387,7 @@ export const Consultation: React.FC<ConsultationProps> = ({ onComplete, onClient
                   See it in action.
                 </h2>
                 <p className="text-lg text-slate-500 mt-4 max-w-xl mx-auto">
-                  Experience Cadence from both sides—as a client getting smart recommendations, or as a stylist managing bookings.
+                  Experience Lineup from both sides—as a client getting smart recommendations, or as a stylist managing bookings.
                 </p>
               </div>
 
@@ -397,7 +398,7 @@ export const Consultation: React.FC<ConsultationProps> = ({ onComplete, onClient
                     <span className="iconify text-white text-3xl" data-icon="solar:user-bold"></span>
                   </div>
                   <h3 className="text-2xl font-black text-[#161616] mb-3">Client Experience</h3>
-                  <p className="text-slate-500 mb-6">See how Cadence learns your schedule and recommends the perfect booking times based on your lifestyle.</p>
+                  <p className="text-slate-500 mb-6">See how Lineup learns your schedule and recommends the perfect booking times based on your lifestyle.</p>
                   <ul className="space-y-2 mb-8 text-sm">
                     <li className="flex items-center gap-2 text-slate-600">
                       <span className="iconify text-[#c0563b]" data-icon="solar:check-circle-bold"></span>
@@ -452,7 +453,7 @@ export const Consultation: React.FC<ConsultationProps> = ({ onComplete, onClient
                 Barbers. Stylists. Salons. Spas.
               </h2>
               <p className="text-xl text-slate-300 mt-6 max-w-2xl mx-auto">
-                Any recurring personal service. Whether you're running a multi-chair shop or working independently, Cadence adapts to your workflow.
+                Any recurring personal service. Whether you're running a multi-chair shop or working independently, Lineup adapts to your workflow.
               </p>
               <div className="flex flex-wrap justify-center gap-6 mt-8 text-sm text-slate-400">
                 <span>Independent stylists</span>

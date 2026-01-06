@@ -218,7 +218,7 @@ export const BarberDashboard: React.FC = () => {
                   <div className="space-y-4">
                     {[
                       { label: 'Last Visit', value: selectedClient.lastVisit },
-                      { label: 'Usual Cadence', value: selectedClient.cadence },
+                      { label: 'Visit Frequency', value: selectedClient.cadence },
                       { label: 'Freshness Priority', value: `${selectedClient.priority}/10` }
                     ].map(item => (
                       <div key={item.label} className="flex justify-between items-center py-2 border-b border-[#f3f2ee]">

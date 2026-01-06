@@ -11,12 +11,12 @@ type ViewMode = 'landing' | 'client' | 'barber';
 
 const App: React.FC = () => {
   const [viewMode, setViewMode] = useState<ViewMode>(() => {
-    const saved = localStorage.getItem('cadence_view_mode');
+    const saved = localStorage.getItem('lineup_view_mode');
     return (saved as ViewMode) || 'landing';
   });
 
   const [appState, setAppState] = useState<AppState>(() => {
-    const saved = localStorage.getItem('cadence_state');
+    const saved = localStorage.getItem('lineup_state');
     return saved ? JSON.parse(saved) : {
       onboardingComplete: false,
       profile: null,
@@ -25,37 +25,32 @@ const App: React.FC = () => {
     };
   });
 
-  // Demo mode launcher for client view
+  // Demo mode state
+  const [clientDemoMode, setClientDemoMode] = useState(false);
+
+  // Demo mode launcher for client view - starts consultation flow
   const launchClientDemo = () => {
-    const demoProfile = {
-      name: 'Marcus Demo',
-      hairType: 'curly' as const,
-      growthRate: 'average' as const,
-      weeklyRhythm: 'consistent' as const,
-      lastCutDate: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
-    };
+    // Reset state and start consultation at step 1
     setAppState({
-      onboardingComplete: true,
-      profile: demoProfile,
-      recommendations: [
-        { date: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString(), score: 'optimal', reason: 'Job interview on Friday — look sharp for first impressions' },
-        { date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), score: 'good', reason: 'Regular 2-week maintenance cycle' },
-        { date: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000).toISOString(), score: 'acceptable', reason: 'Weekend social events coming up' }
-      ],
+      onboardingComplete: false,
+      profile: null,
+      recommendations: [],
       streak: 94
     });
-    setViewMode('client');
+    setClientDemoMode(true);
+    setViewMode('landing');
   };
 
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    localStorage.setItem('cadence_state', JSON.stringify(appState));
-    localStorage.setItem('cadence_view_mode', viewMode);
+    localStorage.setItem('lineup_state', JSON.stringify(appState));
+    localStorage.setItem('lineup_view_mode', viewMode);
   }, [appState, viewMode]);
 
   const handleConsultationComplete = async (profile: UserProfile) => {
     setIsLoading(true);
+    setClientDemoMode(false); // Reset demo mode
     try {
       const recommendations = await getStyleRecommendations(profile);
       setAppState({
@@ -104,7 +99,7 @@ const App: React.FC = () => {
               onClick={() => setViewMode('landing')}
             >
               <span className="iconify text-[#c0563b] text-4xl" data-icon="solar:scissors-bold-duotone"></span>
-              <span className="text-3xl font-black text-[#161616] tracking-tighter">Cadence</span>
+              <span className="text-3xl font-black text-[#161616] tracking-tighter">Lineup</span>
             </div>
             
             <div className="hidden lg:flex items-center gap-1 bg-[#e5e4e0] p-1.5 rounded-full">
@@ -187,6 +182,7 @@ const App: React.FC = () => {
             onComplete={handleConsultationComplete}
             onClientDemo={launchClientDemo}
             onBarberDemo={() => setViewMode('barber')}
+            startAtStep={clientDemoMode ? 1 : 0}
           />
         )}
         {viewMode === 'client' && (
@@ -203,7 +199,7 @@ const App: React.FC = () => {
              <div className="space-y-6">
                <div className="flex items-center gap-2">
                  <span className="iconify text-[#c0563b] text-2xl" data-icon="solar:scissors-bold-duotone"></span>
-                 <span className="text-xl font-black text-[#161616] tracking-tighter">Cadence</span>
+                 <span className="text-xl font-black text-[#161616] tracking-tighter">Lineup</span>
                </div>
                <p className="text-[#555] max-w-xs font-medium leading-relaxed">Smart scheduling for stylists. Keep your chair full and your clients coming back.</p>
                <div className="flex gap-5 opacity-50 items-center">
@@ -241,7 +237,7 @@ const App: React.FC = () => {
              </div>
           </div>
           <div className="pt-12 border-t border-[#f3f2ee] flex justify-between items-center text-[10px] font-black uppercase tracking-widest text-[#ccc]">
-             <span>© 2025 Cadence. Built for stylists.</span>
+             <span>© 2026 Lineup. Built for stylists.</span>
              <div className="flex gap-4">
                 <a href="#" className="hover:text-[#c0563b]"><span className="iconify" data-icon="solar:letter-bold-duotone"></span></a>
                 <a href="#" className="hover:text-[#c0563b]"><span className="iconify" data-icon="mdi:instagram"></span></a>
