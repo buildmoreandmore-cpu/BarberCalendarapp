@@ -199,6 +199,20 @@
         animation: float 4s ease-in-out infinite;
       }
 
+      /* Horizontal scroll animation for photo strip */
+      @keyframes scroll-left {
+        0% { transform: translateX(0); }
+        100% { transform: translateX(-50%); }
+      }
+
+      .animate-scroll {
+        animation: scroll-left 30s linear infinite;
+      }
+
+      .animate-scroll:hover {
+        animation-play-state: paused;
+      }
+
       /* Micro-interactions */
       .btn-hover {
         transition: all 0.25s var(--ease-snappy);

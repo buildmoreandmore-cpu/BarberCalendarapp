@@ -227,6 +227,42 @@ export const Consultation: React.FC<ConsultationProps> = ({ onComplete, onClient
           </div>
         </section>
 
+        {/* Lifestyle Photo Strip - Infinite Scroll */}
+        <section className="py-16 overflow-hidden bg-[#161616]">
+          <div className="flex gap-4 animate-scroll" style={{ width: 'fit-content' }}>
+            {/* First set of images */}
+            {[
+              { src: "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?q=80&w=400&auto=format&fit=crop", alt: "Barbershop interior" },
+              { src: "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?q=80&w=400&auto=format&fit=crop", alt: "Barber cutting hair" },
+              { src: "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?q=80&w=400&auto=format&fit=crop", alt: "Classic barber chair" },
+              { src: "https://images.unsplash.com/photo-1560066984-138dadb4c035?q=80&w=400&auto=format&fit=crop", alt: "Stylist at work" },
+              { src: "https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?q=80&w=400&auto=format&fit=crop", alt: "Modern salon" },
+              { src: "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?q=80&w=400&auto=format&fit=crop", alt: "Barber tools" },
+              { src: "https://images.unsplash.com/photo-1582095133179-bfd08e2fc6b3?q=80&w=400&auto=format&fit=crop", alt: "Hair styling" },
+              { src: "https://images.unsplash.com/photo-1493256338651-d82f7acb2b38?q=80&w=400&auto=format&fit=crop", alt: "Barbershop vibe" },
+            ].map((img, i) => (
+              <div key={`a-${i}`} className="flex-shrink-0 w-72 h-48 rounded-2xl overflow-hidden">
+                <img src={img.src} alt={img.alt} className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
+              </div>
+            ))}
+            {/* Duplicate for seamless loop */}
+            {[
+              { src: "https://images.unsplash.com/photo-1585747860715-2ba37e788b70?q=80&w=400&auto=format&fit=crop", alt: "Barbershop interior" },
+              { src: "https://images.unsplash.com/photo-1599351431202-1e0f0137899a?q=80&w=400&auto=format&fit=crop", alt: "Barber cutting hair" },
+              { src: "https://images.unsplash.com/photo-1503951914875-452162b0f3f1?q=80&w=400&auto=format&fit=crop", alt: "Classic barber chair" },
+              { src: "https://images.unsplash.com/photo-1560066984-138dadb4c035?q=80&w=400&auto=format&fit=crop", alt: "Stylist at work" },
+              { src: "https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?q=80&w=400&auto=format&fit=crop", alt: "Modern salon" },
+              { src: "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?q=80&w=400&auto=format&fit=crop", alt: "Barber tools" },
+              { src: "https://images.unsplash.com/photo-1582095133179-bfd08e2fc6b3?q=80&w=400&auto=format&fit=crop", alt: "Hair styling" },
+              { src: "https://images.unsplash.com/photo-1493256338651-d82f7acb2b38?q=80&w=400&auto=format&fit=crop", alt: "Barbershop vibe" },
+            ].map((img, i) => (
+              <div key={`b-${i}`} className="flex-shrink-0 w-72 h-48 rounded-2xl overflow-hidden">
+                <img src={img.src} alt={img.alt} className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
+              </div>
+            ))}
+          </div>
+        </section>
+
         {/* How It Works Section */}
         <section className="py-32 bg-[#f3f2ee]">
           <div className="max-w-7xl mx-auto px-6">
@@ -526,25 +562,39 @@ export const Consultation: React.FC<ConsultationProps> = ({ onComplete, onClient
            </div>
 
            {/* Works for Everyone */}
-           <div className="text-center bg-[#161616] rounded-[40px] p-12 md:p-20 reveal-section">
-              <span className="bg-[#c0563b] text-white px-4 py-2 rounded-full font-black text-xs uppercase tracking-widest">For Everyone</span>
-              <h2 className="text-3xl md:text-5xl font-extrabold text-white tracking-tight mt-8">
-                Barbers. Stylists. Salons. Spas.
-              </h2>
-              <p className="text-xl text-slate-300 mt-6 max-w-2xl mx-auto">
-                Any recurring personal service. Whether you're running a multi-chair shop or working independently, Lineup adapts to your workflow.
-              </p>
-              <div className="flex flex-wrap justify-center gap-6 mt-8 text-sm text-slate-400">
-                <span>Independent stylists</span>
-                <span>•</span>
-                <span>Barbershops</span>
-                <span>•</span>
-                <span>Hair salons</span>
-                <span>•</span>
-                <span>Spas & aestheticians</span>
+           <div className="bg-[#161616] rounded-[40px] p-12 md:p-20 reveal-section overflow-hidden">
+              <div className="text-center mb-12">
+                <span className="bg-[#c0563b] text-white px-4 py-2 rounded-full font-black text-xs uppercase tracking-widest">For Everyone</span>
+                <h2 className="text-3xl md:text-5xl font-extrabold text-white tracking-tight mt-8">
+                  Barbers. Stylists. Salons. Spas.
+                </h2>
+                <p className="text-xl text-slate-300 mt-6 max-w-2xl mx-auto">
+                  Any recurring personal service. Whether you're running a multi-chair shop or working independently, Lineup adapts to your workflow.
+                </p>
               </div>
-              <div className="flex flex-wrap justify-center gap-4 mt-10">
-                <Button onClick={nextStep} variant="primary" className="px-8">Start free trial</Button>
+
+              {/* Photo Grid */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
+                {[
+                  { src: "https://images.unsplash.com/photo-1622286342621-4bd786c2447c?q=80&w=300&auto=format&fit=crop", label: "Barbershops" },
+                  { src: "https://images.unsplash.com/photo-1560066984-138dadb4c035?q=80&w=300&auto=format&fit=crop", label: "Hair Salons" },
+                  { src: "https://images.unsplash.com/photo-1519699047748-de8e457a634e?q=80&w=300&auto=format&fit=crop", label: "Independent Stylists" },
+                  { src: "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?q=80&w=300&auto=format&fit=crop", label: "Spas" },
+                ].map((item, i) => (
+                  <div key={i} className="relative group">
+                    <div className="aspect-square rounded-2xl overflow-hidden">
+                      <img src={item.src} alt={item.label} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+                    </div>
+                    <span className="absolute bottom-3 left-3 text-white font-bold text-sm">{item.label}</span>
+                  </div>
+                ))}
+              </div>
+
+              <div className="text-center">
+                <div className="flex flex-wrap justify-center gap-4">
+                  <Button onClick={nextStep} variant="primary" className="px-8">Start free trial</Button>
+                </div>
               </div>
            </div>
         </section>
