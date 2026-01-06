@@ -45,102 +45,121 @@ export const Consultation: React.FC<ConsultationProps> = ({ onComplete }) => {
           </div>
           
           <div className="relative">
-            {/* Cool Animated Monthly Calendar */}
-            <div className="bg-gradient-to-br from-[#161616] to-[#2a2a2a] rounded-3xl overflow-hidden shadow-2xl p-8 animate-fade-in-up border border-white/10">
-              {/* Header */}
-              <div className="flex items-center justify-between mb-8">
-                <div>
-                  <h3 className="text-2xl font-black text-white tracking-tight">January</h3>
-                  <p className="text-slate-400 text-sm font-medium">2025</p>
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="flex items-center gap-2 bg-[#c0563b]/20 px-3 py-1.5 rounded-full">
-                    <div className="w-2 h-2 rounded-full bg-[#c0563b] animate-pulse"></div>
-                    <span className="text-xs font-bold text-[#c0563b]">18 Booked</span>
+            {/* Premium On-Brand Calendar */}
+            <div className="bg-white rounded-[32px] overflow-hidden shadow-2xl animate-fade-in-up border border-[#e5e4e0]">
+              {/* Header with gradient accent */}
+              <div className="bg-gradient-to-r from-[#161616] to-[#2a2a2a] p-6">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-2xl bg-[#c0563b] flex items-center justify-center">
+                      <span className="iconify text-white text-2xl" data-icon="solar:calendar-bold"></span>
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-black text-white tracking-tight">January 2025</h3>
+                      <p className="text-slate-400 text-xs font-semibold">Your booking calendar</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="bg-white/10 backdrop-blur px-3 py-1.5 rounded-full flex items-center gap-2">
+                      <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse"></div>
+                      <span className="text-xs font-bold text-white">Live</span>
+                    </div>
                   </div>
                 </div>
               </div>
 
-              {/* Day Headers */}
-              <div className="grid grid-cols-7 gap-3 mb-4">
-                {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((day, i) => (
-                  <div key={i} className="text-center text-xs font-bold text-slate-500">{day}</div>
-                ))}
-              </div>
+              {/* Calendar Body */}
+              <div className="p-6">
+                {/* Day Headers */}
+                <div className="grid grid-cols-7 gap-2 mb-3">
+                  {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day, i) => (
+                    <div key={i} className="text-center text-[10px] font-black text-slate-400 uppercase tracking-wider">{day}</div>
+                  ))}
+                </div>
 
-              {/* Calendar Grid */}
-              <div className="grid grid-cols-7 gap-3">
-                {/* Week 1 */}
-                {[null, null, null, 1, 2, 3, 4].map((day, i) => (
-                  <div key={`w1-${i}`} className={`aspect-square flex items-center justify-center rounded-2xl text-sm font-bold transition-all duration-300 ${day ? 'bg-white/5 hover:bg-white/10 text-white' : ''}`}>
-                    {day && <span>{day}</span>}
-                  </div>
-                ))}
-
-                {/* Week 2 */}
-                {[5, 6, 7, 8, 9, 10, 11].map((day, i) => {
-                  const isBooked = [6, 7, 9, 10].includes(day);
-                  return (
-                    <div key={`w2-${i}`} className={`aspect-square flex items-center justify-center rounded-2xl text-sm font-bold transition-all duration-300 ${isBooked ? 'bg-[#c0563b] text-white animate-pop-in shadow-lg shadow-[#c0563b]/30' : 'bg-white/5 hover:bg-white/10 text-white'}`} style={isBooked ? {animationDelay: `${0.3 + i * 0.1}s`, opacity: 0} : {}}>
-                      <span>{day}</span>
-                    </div>
-                  );
-                })}
-
-                {/* Week 3 - Current Week */}
-                {[12, 13, 14, 15, 16, 17, 18].map((day, i) => {
-                  const isToday = day === 15;
-                  const isBooked = [13, 14, 16, 17].includes(day);
-                  return (
-                    <div key={`w3-${i}`} className={`aspect-square flex flex-col items-center justify-center rounded-2xl text-sm font-bold transition-all duration-300 ${isToday ? 'bg-gradient-to-br from-[#c0563b] to-[#e07a5f] text-white ring-4 ring-[#c0563b]/30 animate-pulse-booking scale-110' : isBooked ? 'bg-[#c0563b] text-white animate-pop-in shadow-lg shadow-[#c0563b]/30' : 'bg-white/5 hover:bg-white/10 text-white'}`} style={isBooked ? {animationDelay: `${0.8 + i * 0.1}s`, opacity: 0} : {}}>
-                      <span>{day}</span>
-                      {isToday && <span className="text-[7px] font-black uppercase tracking-wider mt-0.5 opacity-80">Today</span>}
-                    </div>
-                  );
-                })}
-
-                {/* Week 4 */}
-                {[19, 20, 21, 22, 23, 24, 25].map((day, i) => {
-                  const isBooked = [20, 21, 22, 23].includes(day);
-                  return (
-                    <div key={`w4-${i}`} className={`aspect-square flex items-center justify-center rounded-2xl text-sm font-bold transition-all duration-300 ${isBooked ? 'bg-[#c0563b] text-white animate-pop-in shadow-lg shadow-[#c0563b]/30' : 'bg-white/5 hover:bg-white/10 text-white'}`} style={isBooked ? {animationDelay: `${1.3 + i * 0.1}s`, opacity: 0} : {}}>
-                      <span>{day}</span>
-                    </div>
-                  );
-                })}
-
-                {/* Week 5 */}
-                {[26, 27, 28, 29, 30, 31, null].map((day, i) => {
-                  const isBooked = [27, 28, 29, 30].includes(day as number);
-                  return (
-                    <div key={`w5-${i}`} className={`aspect-square flex items-center justify-center rounded-2xl text-sm font-bold transition-all duration-300 ${day ? (isBooked ? 'bg-[#c0563b] text-white animate-pop-in shadow-lg shadow-[#c0563b]/30' : 'bg-white/5 hover:bg-white/10 text-white') : ''}`} style={isBooked ? {animationDelay: `${1.8 + i * 0.1}s`, opacity: 0} : {}}>
+                {/* Calendar Grid */}
+                <div className="grid grid-cols-7 gap-2">
+                  {/* Week 1 */}
+                  {[null, null, null, 1, 2, 3, 4].map((day, i) => (
+                    <div key={`w1-${i}`} className={`aspect-square flex items-center justify-center rounded-xl text-sm font-bold ${day ? 'bg-[#f3f2ee] text-[#161616] hover:bg-[#e5e4e0] transition-colors cursor-pointer' : ''}`}>
                       {day && <span>{day}</span>}
                     </div>
-                  );
-                })}
-              </div>
-
-              {/* Bottom Stats Bar */}
-              <div className="flex items-center justify-between mt-8 pt-6 border-t border-white/10">
-                <div className="flex items-center gap-6">
-                  <div>
-                    <p className="text-2xl font-black text-white">92%</p>
-                    <p className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider">Capacity</p>
-                  </div>
-                  <div className="w-px h-8 bg-white/10"></div>
-                  <div>
-                    <p className="text-2xl font-black text-[#c0563b]">+12</p>
-                    <p className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider">This Week</p>
-                  </div>
-                </div>
-                <div className="flex -space-x-2">
-                  {['M', 'J', 'D', 'E'].map((initial, i) => (
-                    <div key={i} className="w-8 h-8 rounded-full bg-gradient-to-br from-slate-600 to-slate-700 border-2 border-[#161616] flex items-center justify-center text-xs font-bold text-white animate-pop-in" style={{animationDelay: `${2.2 + i * 0.1}s`, opacity: 0}}>
-                      {initial}
-                    </div>
                   ))}
-                  <div className="w-8 h-8 rounded-full bg-[#c0563b] border-2 border-[#161616] flex items-center justify-center text-xs font-bold text-white animate-pop-in" style={{animationDelay: '2.6s', opacity: 0}}>
-                    +14
+
+                  {/* Week 2 */}
+                  {[5, 6, 7, 8, 9, 10, 11].map((day, i) => {
+                    const bookings = {6: 3, 7: 5, 9: 4, 10: 6};
+                    const count = bookings[day as keyof typeof bookings];
+                    return (
+                      <div key={`w2-${i}`} className={`aspect-square flex flex-col items-center justify-center rounded-xl text-sm font-bold transition-all cursor-pointer ${count ? 'bg-[#fbeee0] text-[#c0563b] animate-pop-in' : 'bg-[#f3f2ee] text-[#161616] hover:bg-[#e5e4e0]'}`} style={count ? {animationDelay: `${0.3 + i * 0.08}s`, opacity: 0} : {}}>
+                        <span>{day}</span>
+                        {count && <div className="w-1.5 h-1.5 rounded-full bg-[#c0563b] mt-0.5"></div>}
+                      </div>
+                    );
+                  })}
+
+                  {/* Week 3 - Current Week */}
+                  {[12, 13, 14, 15, 16, 17, 18].map((day, i) => {
+                    const isToday = day === 15;
+                    const bookings = {13: 4, 14: 5, 15: 7, 16: 3, 17: 5};
+                    const count = bookings[day as keyof typeof bookings];
+                    return (
+                      <div key={`w3-${i}`} className={`aspect-square flex flex-col items-center justify-center rounded-xl text-sm font-bold transition-all cursor-pointer ${isToday ? 'bg-[#c0563b] text-white shadow-lg shadow-[#c0563b]/30 scale-110 animate-pulse-booking' : count ? 'bg-[#fbeee0] text-[#c0563b] animate-pop-in' : 'bg-[#f3f2ee] text-[#161616] hover:bg-[#e5e4e0]'}`} style={count && !isToday ? {animationDelay: `${0.6 + i * 0.08}s`, opacity: 0} : {}}>
+                        <span className={isToday ? 'text-base' : ''}>{day}</span>
+                        {isToday && <span className="text-[7px] font-black uppercase tracking-wider opacity-80">Today</span>}
+                        {count && !isToday && <div className="w-1.5 h-1.5 rounded-full bg-[#c0563b] mt-0.5"></div>}
+                      </div>
+                    );
+                  })}
+
+                  {/* Week 4 */}
+                  {[19, 20, 21, 22, 23, 24, 25].map((day, i) => {
+                    const bookings = {20: 4, 21: 6, 22: 5, 23: 3};
+                    const count = bookings[day as keyof typeof bookings];
+                    return (
+                      <div key={`w4-${i}`} className={`aspect-square flex flex-col items-center justify-center rounded-xl text-sm font-bold transition-all cursor-pointer ${count ? 'bg-[#fbeee0] text-[#c0563b] animate-pop-in' : 'bg-[#f3f2ee] text-[#161616] hover:bg-[#e5e4e0]'}`} style={count ? {animationDelay: `${0.9 + i * 0.08}s`, opacity: 0} : {}}>
+                        <span>{day}</span>
+                        {count && <div className="w-1.5 h-1.5 rounded-full bg-[#c0563b] mt-0.5"></div>}
+                      </div>
+                    );
+                  })}
+
+                  {/* Week 5 */}
+                  {[26, 27, 28, 29, 30, 31, null].map((day, i) => {
+                    const bookings = {27: 2, 28: 4, 29: 3, 30: 5};
+                    const count = day ? bookings[day as keyof typeof bookings] : undefined;
+                    return (
+                      <div key={`w5-${i}`} className={`aspect-square flex flex-col items-center justify-center rounded-xl text-sm font-bold transition-all ${day ? (count ? 'bg-[#fbeee0] text-[#c0563b] animate-pop-in cursor-pointer' : 'bg-[#f3f2ee] text-[#161616] hover:bg-[#e5e4e0] cursor-pointer') : ''}`} style={count ? {animationDelay: `${1.2 + i * 0.08}s`, opacity: 0} : {}}>
+                        {day && <span>{day}</span>}
+                        {count && <div className="w-1.5 h-1.5 rounded-full bg-[#c0563b] mt-0.5"></div>}
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* Upcoming Appointments Preview */}
+                <div className="mt-6 pt-5 border-t border-[#e5e4e0]">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-[10px] font-black uppercase tracking-wider text-slate-400">Today's Schedule</span>
+                    <span className="text-[10px] font-bold text-[#c0563b]">7 appointments</span>
+                  </div>
+                  <div className="space-y-2">
+                    {[
+                      {time: '9:00 AM', name: 'Marcus K.', service: 'Fade + Beard'},
+                      {time: '10:30 AM', name: 'James T.', service: 'Line Up'},
+                      {time: '12:00 PM', name: 'David W.', service: 'Full Service'},
+                    ].map((apt, i) => (
+                      <div key={i} className="flex items-center gap-3 p-2 rounded-xl bg-[#f3f2ee] animate-pop-in" style={{animationDelay: `${1.5 + i * 0.15}s`, opacity: 0}}>
+                        <div className="w-8 h-8 rounded-lg bg-[#c0563b] flex items-center justify-center text-white text-xs font-bold">
+                          {apt.name.split(' ').map(n => n[0]).join('')}
+                        </div>
+                        <div className="flex-1">
+                          <p className="text-xs font-bold text-[#161616]">{apt.name}</p>
+                          <p className="text-[10px] text-slate-500">{apt.service}</p>
+                        </div>
+                        <span className="text-[10px] font-bold text-[#c0563b]">{apt.time}</span>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>
