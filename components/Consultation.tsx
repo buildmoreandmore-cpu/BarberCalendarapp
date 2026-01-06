@@ -45,9 +45,87 @@ export const Consultation: React.FC<ConsultationProps> = ({ onComplete }) => {
           </div>
           
           <div className="relative">
-            <div className="bg-white rounded-3xl overflow-hidden shadow-2xl">
-              <img src="https://images.unsplash.com/photo-1585747860715-2ba37e788b70?q=80&w=800&auto=format&fit=crop" className="w-full h-[500px] object-cover" alt="Professional Barbershop" />
+            {/* Animated Monthly Calendar */}
+            <div className="bg-white rounded-3xl overflow-hidden shadow-2xl p-6 animate-fade-in-up">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-xl font-bold text-[#161616]">January 2025</h3>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-semibold text-[#c0563b] bg-[#fbeee0] px-2 py-1 rounded">This Week</span>
+                </div>
+              </div>
+
+              {/* Day Headers */}
+              <div className="grid grid-cols-7 gap-2 mb-2">
+                {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
+                  <div key={day} className="text-center text-xs font-bold text-slate-400 uppercase">{day}</div>
+                ))}
+              </div>
+
+              {/* Calendar Grid */}
+              <div className="grid grid-cols-7 gap-2">
+                {/* Week 1 - starts on Wednesday */}
+                {[null, null, null, 1, 2, 3, 4].map((day, i) => (
+                  <div key={`w1-${i}`} className={`aspect-square flex flex-col items-center justify-center rounded-xl text-sm font-medium ${day ? 'bg-[#f3f2ee]' : ''}`}>
+                    {day && <span className="text-[#161616]">{day}</span>}
+                    {day === 3 && <div className="w-2 h-2 rounded-full bg-[#c0563b] mt-1 animate-pop-in" style={{animationDelay: '0.5s', opacity: 0}}></div>}
+                  </div>
+                ))}
+
+                {/* Week 2 */}
+                {[5, 6, 7, 8, 9, 10, 11].map((day, i) => (
+                  <div key={`w2-${i}`} className="aspect-square flex flex-col items-center justify-center rounded-xl text-sm font-medium bg-[#f3f2ee]">
+                    <span className="text-[#161616]">{day}</span>
+                    {[6, 7, 9, 10].includes(day) && (
+                      <div className="w-2 h-2 rounded-full bg-[#c0563b] mt-1 animate-pop-in" style={{animationDelay: `${0.7 + i * 0.15}s`, opacity: 0}}></div>
+                    )}
+                  </div>
+                ))}
+
+                {/* Week 3 */}
+                {[12, 13, 14, 15, 16, 17, 18].map((day, i) => (
+                  <div key={`w3-${i}`} className={`aspect-square flex flex-col items-center justify-center rounded-xl text-sm font-medium ${day === 15 ? 'bg-[#c0563b] text-white animate-pulse-booking' : 'bg-[#f3f2ee]'}`}>
+                    <span className={day === 15 ? 'text-white font-bold' : 'text-[#161616]'}>{day}</span>
+                    {[13, 14, 16, 17].includes(day) && (
+                      <div className="w-2 h-2 rounded-full bg-[#c0563b] mt-1 animate-pop-in" style={{animationDelay: `${1.2 + i * 0.15}s`, opacity: 0}}></div>
+                    )}
+                    {day === 15 && <span className="text-[8px] mt-0.5 font-semibold">TODAY</span>}
+                  </div>
+                ))}
+
+                {/* Week 4 */}
+                {[19, 20, 21, 22, 23, 24, 25].map((day, i) => (
+                  <div key={`w4-${i}`} className="aspect-square flex flex-col items-center justify-center rounded-xl text-sm font-medium bg-[#f3f2ee]">
+                    <span className="text-[#161616]">{day}</span>
+                    {[20, 21, 22, 23].includes(day) && (
+                      <div className="w-2 h-2 rounded-full bg-[#c0563b] mt-1 animate-pop-in" style={{animationDelay: `${1.7 + i * 0.15}s`, opacity: 0}}></div>
+                    )}
+                  </div>
+                ))}
+
+                {/* Week 5 */}
+                {[26, 27, 28, 29, 30, 31, null].map((day, i) => (
+                  <div key={`w5-${i}`} className={`aspect-square flex flex-col items-center justify-center rounded-xl text-sm font-medium ${day ? 'bg-[#f3f2ee]' : ''}`}>
+                    {day && <span className="text-[#161616]">{day}</span>}
+                    {[27, 28, 29].includes(day as number) && (
+                      <div className="w-2 h-2 rounded-full bg-[#c0563b] mt-1 animate-pop-in" style={{animationDelay: `${2.2 + i * 0.15}s`, opacity: 0}}></div>
+                    )}
+                  </div>
+                ))}
+              </div>
+
+              {/* Legend */}
+              <div className="flex items-center justify-center gap-4 mt-4 pt-4 border-t border-slate-100">
+                <div className="flex items-center gap-2 text-xs text-slate-500">
+                  <div className="w-2 h-2 rounded-full bg-[#c0563b]"></div>
+                  <span>Booked</span>
+                </div>
+                <div className="flex items-center gap-2 text-xs text-slate-500">
+                  <div className="w-2 h-2 rounded-full bg-slate-300"></div>
+                  <span>Available</span>
+                </div>
+              </div>
             </div>
+
             <div className="absolute -bottom-6 -left-6 bg-[#161616] p-6 rounded-2xl text-white shadow-xl">
               <span className="iconify text-[#c0563b] text-4xl mb-4" data-icon="solar:chart-square-bold-duotone"></span>
               <h4 className="text-lg font-bold mb-1">98% Retention</h4>
