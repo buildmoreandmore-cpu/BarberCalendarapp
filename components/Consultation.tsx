@@ -46,23 +46,23 @@ export const Consultation: React.FC<ConsultationProps> = ({ onComplete, onClient
         {/* Hero Section */}
         <section className="max-w-7xl mx-auto px-6 pt-20 pb-32 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-8">
-            <h1 className="text-6xl md:text-8xl font-extrabold text-[#161616] tracking-tight leading-[0.9]">
+            <h1 className="text-6xl md:text-8xl font-extrabold text-[#161616] tracking-tight leading-[0.9] hero-animate hero-animate-1">
               Your clients, <br/> always <span className="italic">fresh.</span>
             </h1>
-            <p className="text-xl text-[#161616] max-w-md leading-relaxed">
+            <p className="text-xl text-[#161616] max-w-md leading-relaxed hero-animate hero-animate-2">
               Lineup learns your clients' schedules, events, and lifestyle—then books them at the perfect time. <span className="font-bold underline decoration-[#c0563b] decoration-2 underline-offset-4">Full chairs, zero chasing.</span>
             </p>
-            <div className="flex flex-col items-start gap-4">
-              <Button variant="primary" onClick={nextStep} className="px-10 py-4 text-lg">
+            <div className="flex flex-col items-start gap-4 hero-animate hero-animate-3">
+              <Button variant="primary" onClick={nextStep} className="px-10 py-4 text-lg btn-hover">
                 Start free trial
               </Button>
               <span className="text-xs text-slate-500 font-medium ml-4">No credit card required</span>
             </div>
           </div>
           
-          <div className="relative">
+          <div className="relative hero-animate hero-animate-4">
             {/* Premium On-Brand Calendar */}
-            <div className="bg-white rounded-[32px] overflow-hidden shadow-2xl animate-fade-in-up border border-[#e5e4e0]">
+            <div className="bg-white rounded-[32px] overflow-hidden shadow-2xl scale-in border border-[#e5e4e0]" style={{animationDelay: '0.3s'}}>
               {/* Header with gradient accent */}
               <div className="bg-gradient-to-r from-[#161616] to-[#2a2a2a] p-6">
                 <div className="flex items-center justify-between">
@@ -187,7 +187,7 @@ export const Consultation: React.FC<ConsultationProps> = ({ onComplete, onClient
         <section className="bg-[#161616] py-32">
           <div className="max-w-7xl mx-auto px-6">
             {/* Problem Statement */}
-            <div className="text-center mb-20">
+            <div className="text-center mb-20 reveal-section">
               <span className="bg-[#c0563b]/20 text-[#c0563b] px-4 py-2 rounded-full font-black text-xs uppercase tracking-widest">The Problem</span>
               <h2 className="text-4xl md:text-6xl font-extrabold text-white tracking-tight leading-tight mt-8 max-w-4xl mx-auto">
                 Clients forget to book until they already look rough.
@@ -201,7 +201,7 @@ export const Consultation: React.FC<ConsultationProps> = ({ onComplete, onClient
                 { icon: "solar:chat-round-dots-bold-duotone", title: "Barbers Chase", desc: "Endless texts, DMs, and reminders. You're a stylist, not a secretary." },
                 { icon: "solar:chair-bold-duotone", title: "Chairs Sit Empty", desc: "Last-minute cancellations. No-shows. Revenue walking out the door." }
               ].map((problem, i) => (
-                <div key={i} className="bg-white/5 border border-white/10 rounded-3xl p-8 text-center">
+                <div key={i} className={`bg-white/5 border border-white/10 rounded-3xl p-8 text-center card-hover reveal-section reveal-delay-${i + 1}`}>
                   <span className="iconify text-[#c0563b] text-5xl mb-4" data-icon={problem.icon}></span>
                   <h3 className="text-xl font-bold text-white mb-2">{problem.title}</h3>
                   <p className="text-slate-400 text-sm">{problem.desc}</p>
@@ -225,7 +225,7 @@ export const Consultation: React.FC<ConsultationProps> = ({ onComplete, onClient
         {/* How It Works Section */}
         <section className="py-32 bg-[#f3f2ee]">
           <div className="max-w-7xl mx-auto px-6">
-            <div className="text-center mb-16">
+            <div className="text-center mb-16 reveal-section">
               <span className="bg-[#fbeee0] text-[#c0563b] px-4 py-2 rounded-full font-black text-xs uppercase tracking-widest">How It Works</span>
               <h2 className="text-4xl md:text-5xl font-extrabold text-[#161616] tracking-tight mt-6">
                 Simple for everyone.
@@ -234,7 +234,7 @@ export const Consultation: React.FC<ConsultationProps> = ({ onComplete, onClient
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
               {/* For Clients */}
-              <div className="bg-white rounded-[32px] p-8 border border-[#e5e4e0] shadow-sm">
+              <div className="bg-white rounded-[32px] p-8 border border-[#e5e4e0] shadow-sm card-hover reveal-section reveal-delay-1">
                 <div className="flex items-center gap-3 mb-8">
                   <div className="w-12 h-12 rounded-2xl bg-[#161616] flex items-center justify-center">
                     <span className="iconify text-white text-2xl" data-icon="solar:user-bold"></span>
@@ -262,7 +262,7 @@ export const Consultation: React.FC<ConsultationProps> = ({ onComplete, onClient
               </div>
 
               {/* For Barbers */}
-              <div className="bg-[#161616] rounded-[32px] p-8 border border-white/10">
+              <div className="bg-[#161616] rounded-[32px] p-8 border border-white/10 card-hover reveal-section reveal-delay-2">
                 <div className="flex items-center gap-3 mb-8">
                   <div className="w-12 h-12 rounded-2xl bg-[#c0563b] flex items-center justify-center">
                     <span className="iconify text-white text-2xl" data-icon="solar:scissors-bold"></span>
@@ -292,10 +292,84 @@ export const Consultation: React.FC<ConsultationProps> = ({ onComplete, onClient
           </div>
         </section>
 
+        {/* The Difference - Competitive Positioning */}
+        <section className="bg-[#161616] py-32">
+          <div className="max-w-7xl mx-auto px-6">
+            <div className="text-center mb-16 reveal-section">
+              <span className="bg-[#c0563b] text-white px-4 py-2 rounded-full font-black text-xs uppercase tracking-widest">The Difference</span>
+              <h2 className="text-4xl md:text-6xl font-extrabold text-white tracking-tight leading-tight mt-8 max-w-4xl mx-auto">
+                Not just booking.<br/><span className="text-[#c0563b]">Client retention.</span>
+              </h2>
+              <p className="text-xl text-slate-300 mt-6 max-w-2xl mx-auto">
+                Every booking platform asks "when do you want to come in?" Lineup tells clients when they <span className="italic font-semibold">should</span> come in.
+              </p>
+            </div>
+
+            {/* Comparison Table */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-16">
+              {/* Traditional Booking */}
+              <div className="bg-white/5 border border-white/10 rounded-3xl p-8 reveal-section reveal-delay-1">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-10 h-10 rounded-xl bg-slate-700 flex items-center justify-center">
+                    <span className="iconify text-slate-400 text-xl" data-icon="solar:calendar-minimalistic-bold"></span>
+                  </div>
+                  <h3 className="text-xl font-bold text-slate-400">Traditional Booking</h3>
+                </div>
+                <ul className="space-y-4">
+                  {[
+                    { text: "Client thinks \"I need a cut\"", icon: "solar:user-speak-bold-duotone" },
+                    { text: "Client picks any available time", icon: "solar:clock-circle-bold-duotone" },
+                    { text: "Barber sees just a name and time", icon: "solar:document-bold-duotone" },
+                    { text: "Client forgets, no-shows, looks rough", icon: "solar:sad-circle-bold-duotone" },
+                    { text: "One-time transaction", icon: "solar:hand-money-bold-duotone" }
+                  ].map((item, i) => (
+                    <li key={i} className="flex items-center gap-3 text-slate-400">
+                      <span className="iconify text-xl opacity-50" data-icon={item.icon}></span>
+                      <span className="text-sm">{item.text}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Lineup */}
+              <div className="bg-gradient-to-br from-[#c0563b] to-[#a64932] rounded-3xl p-8 shadow-xl shadow-[#c0563b]/20 reveal-section reveal-delay-2">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center">
+                    <span className="iconify text-white text-xl" data-icon="solar:scissors-bold"></span>
+                  </div>
+                  <h3 className="text-xl font-bold text-white">Lineup</h3>
+                </div>
+                <ul className="space-y-4">
+                  {[
+                    { text: "Lineup tells client \"You need a cut\"", icon: "solar:bell-bing-bold-duotone" },
+                    { text: "Lineup recommends the optimal time", icon: "solar:star-bold-duotone" },
+                    { text: "Barber sees why this date matters", icon: "solar:lightbulb-bolt-bold-duotone" },
+                    { text: "Client gets reminded before key moments", icon: "solar:check-circle-bold-duotone" },
+                    { text: "Ongoing relationship with rhythm", icon: "solar:heart-bold-duotone" }
+                  ].map((item, i) => (
+                    <li key={i} className="flex items-center gap-3 text-white">
+                      <span className="iconify text-xl text-white/80" data-icon={item.icon}></span>
+                      <span className="text-sm font-medium">{item.text}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+
+            {/* Bottom tagline */}
+            <div className="text-center reveal-section reveal-delay-3">
+              <p className="text-2xl md:text-3xl font-bold text-white max-w-2xl mx-auto">
+                Other platforms help you <span className="text-slate-400">manage bookings</span>.<br/>
+                Lineup helps you <span className="text-[#c0563b]">never lose a client</span>.
+              </p>
+            </div>
+          </div>
+        </section>
+
         {/* Client Context Feature Section */}
         <section className="max-w-7xl mx-auto px-6 py-32 space-y-24">
            {/* Smart Context Demo */}
-           <div className="bg-white rounded-[40px] p-8 md:p-16 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center shadow-sm border border-[#e5e4e0]">
+           <div className="bg-white rounded-[40px] p-8 md:p-16 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center shadow-sm border border-[#e5e4e0] reveal-section">
               <div className="space-y-8">
                 <span className="bg-[#fbeee0] text-[#c0563b] px-3 py-1 rounded font-black text-[10px] uppercase tracking-widest">Smart Context</span>
                 <h2 className="text-4xl md:text-5xl font-extrabold text-[#161616] leading-[1.1]">
@@ -347,32 +421,32 @@ export const Consultation: React.FC<ConsultationProps> = ({ onComplete, onClient
 
            {/* Key Features Grid */}
            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <div className="bg-white p-8 rounded-3xl shadow-sm border border-[#e5e4e0] space-y-4">
+              <div className="bg-white p-8 rounded-3xl shadow-sm border border-[#e5e4e0] space-y-4 card-hover reveal-section reveal-delay-1">
                  <span className="iconify text-4xl text-[#c0563b]" data-icon="solar:calendar-search-bold-duotone"></span>
                  <h3 className="text-xl font-extrabold">Lifestyle Quiz</h3>
                  <p className="text-slate-600 text-sm">Work schedule, travel plans, events, social life—we learn how your clients live.</p>
               </div>
-              <div className="bg-white p-8 rounded-3xl shadow-sm border border-[#e5e4e0] space-y-4">
+              <div className="bg-white p-8 rounded-3xl shadow-sm border border-[#e5e4e0] space-y-4 card-hover reveal-section reveal-delay-2">
                  <span className="iconify text-4xl text-[#c0563b]" data-icon="solar:magic-stick-3-bold-duotone"></span>
                  <h3 className="text-xl font-extrabold">AI Recommendations</h3>
                  <p className="text-slate-600 text-sm">Smart suggestions for when clients should book based on their life rhythm.</p>
               </div>
-              <div className="bg-white p-8 rounded-3xl shadow-sm border border-[#e5e4e0] space-y-4">
+              <div className="bg-white p-8 rounded-3xl shadow-sm border border-[#e5e4e0] space-y-4 card-hover reveal-section reveal-delay-3">
                  <span className="iconify text-4xl text-[#c0563b]" data-icon="solar:bell-bing-bold-duotone"></span>
                  <h3 className="text-xl font-extrabold">Event Reminders</h3>
                  <p className="text-slate-600 text-sm">Automatic nudges before big moments—interviews, dates, trips, birthdays.</p>
               </div>
-              <div className="bg-white p-8 rounded-3xl shadow-sm border border-[#e5e4e0] space-y-4">
+              <div className="bg-white p-8 rounded-3xl shadow-sm border border-[#e5e4e0] space-y-4 card-hover reveal-section reveal-delay-1">
                  <span className="iconify text-4xl text-[#c0563b]" data-icon="solar:users-group-rounded-bold-duotone"></span>
                  <h3 className="text-xl font-extrabold">Client Insights</h3>
                  <p className="text-slate-600 text-sm">See last visit, usual cadence, freshness priority for every client.</p>
               </div>
-              <div className="bg-white p-8 rounded-3xl shadow-sm border border-[#e5e4e0] space-y-4">
+              <div className="bg-white p-8 rounded-3xl shadow-sm border border-[#e5e4e0] space-y-4 card-hover reveal-section reveal-delay-2">
                  <span className="iconify text-4xl text-[#c0563b]" data-icon="solar:check-circle-bold-duotone"></span>
                  <h3 className="text-xl font-extrabold">Barber Approval</h3>
                  <p className="text-slate-600 text-sm">You stay in control. Approve, decline, or suggest alternatives for any booking.</p>
               </div>
-              <div className="bg-white p-8 rounded-3xl shadow-sm border border-[#e5e4e0] space-y-4">
+              <div className="bg-white p-8 rounded-3xl shadow-sm border border-[#e5e4e0] space-y-4 card-hover reveal-section reveal-delay-3">
                  <span className="iconify text-4xl text-[#c0563b]" data-icon="solar:graph-up-bold-duotone"></span>
                  <h3 className="text-xl font-extrabold">Smart Scheduling</h3>
                  <p className="text-slate-600 text-sm">Track and optimize each client's natural booking rhythm over time.</p>
@@ -393,8 +467,8 @@ export const Consultation: React.FC<ConsultationProps> = ({ onComplete, onClient
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Client Demo Card */}
-                <div className="bg-[#f3f2ee] rounded-3xl p-8 border border-[#e5e4e0] hover:shadow-lg transition-all group">
-                  <div className="w-16 h-16 rounded-2xl bg-[#161616] flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <div className="bg-[#f3f2ee] rounded-3xl p-8 border border-[#e5e4e0] card-hover group reveal-section reveal-delay-1">
+                  <div className="w-16 h-16 rounded-2xl bg-[#161616] flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
                     <span className="iconify text-white text-3xl" data-icon="solar:user-bold"></span>
                   </div>
                   <h3 className="text-2xl font-black text-[#161616] mb-3">Client Experience</h3>
@@ -414,13 +488,13 @@ export const Consultation: React.FC<ConsultationProps> = ({ onComplete, onClient
                     </li>
                   </ul>
                   {onClientDemo && (
-                    <Button variant="dark" onClick={onClientDemo} className="w-full">Try Client Demo</Button>
+                    <Button variant="dark" onClick={onClientDemo} className="w-full btn-hover">Try Client Demo</Button>
                   )}
                 </div>
 
                 {/* Stylist Demo Card */}
-                <div className="bg-[#161616] rounded-3xl p-8 border border-white/10 hover:shadow-lg transition-all group">
-                  <div className="w-16 h-16 rounded-2xl bg-[#c0563b] flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                <div className="bg-[#161616] rounded-3xl p-8 border border-white/10 card-hover group reveal-section reveal-delay-2">
+                  <div className="w-16 h-16 rounded-2xl bg-[#c0563b] flex items-center justify-center mb-6 group-hover:scale-110 group-hover:-rotate-3 transition-all duration-300">
                     <span className="iconify text-white text-3xl" data-icon="solar:scissors-bold"></span>
                   </div>
                   <h3 className="text-2xl font-black text-white mb-3">Stylist Dashboard</h3>
@@ -440,14 +514,14 @@ export const Consultation: React.FC<ConsultationProps> = ({ onComplete, onClient
                     </li>
                   </ul>
                   {onBarberDemo && (
-                    <Button variant="primary" onClick={onBarberDemo} className="w-full">Try Stylist Demo</Button>
+                    <Button variant="primary" onClick={onBarberDemo} className="w-full btn-hover">Try Stylist Demo</Button>
                   )}
                 </div>
               </div>
            </div>
 
            {/* Works for Everyone */}
-           <div className="text-center bg-[#161616] rounded-[40px] p-12 md:p-20">
+           <div className="text-center bg-[#161616] rounded-[40px] p-12 md:p-20 reveal-section">
               <span className="bg-[#c0563b] text-white px-4 py-2 rounded-full font-black text-xs uppercase tracking-widest">For Everyone</span>
               <h2 className="text-3xl md:text-5xl font-extrabold text-white tracking-tight mt-8">
                 Barbers. Stylists. Salons. Spas.

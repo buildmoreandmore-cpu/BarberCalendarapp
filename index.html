@@ -42,6 +42,49 @@
         border-radius: 4px;
       }
 
+      /* Premium Motion Design System */
+
+      /* Snappy easing curve - inspired by high-end design */
+      :root {
+        --ease-snappy: cubic-bezier(0.22, 1, 0.36, 1);
+        --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+        --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      /* Hero cascade animations */
+      @keyframes heroFadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(40px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes heroSlideIn {
+        from {
+          opacity: 0;
+          transform: translateX(-30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      @keyframes heroScaleIn {
+        from {
+          opacity: 0;
+          transform: scale(0.9);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
       /* Calendar Animations */
       @keyframes fadeInUp {
         from {
@@ -60,7 +103,7 @@
           transform: scale(0);
         }
         70% {
-          transform: scale(1.2);
+          transform: scale(1.15);
         }
         100% {
           opacity: 1;
@@ -77,16 +120,127 @@
         }
       }
 
+      /* Scroll-triggered reveal */
+      @keyframes revealUp {
+        from {
+          opacity: 0;
+          transform: translateY(60px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Button hover lift */
+      @keyframes buttonPress {
+        0% { transform: scale(1); }
+        50% { transform: scale(0.97); }
+        100% { transform: scale(1); }
+      }
+
+      /* Floating subtle animation */
+      @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-8px); }
+      }
+
+      /* Shimmer effect for loading states */
+      @keyframes shimmer {
+        0% { background-position: -200% 0; }
+        100% { background-position: 200% 0; }
+      }
+
+      /* Hero animations with staggered delays */
+      .hero-animate {
+        opacity: 0;
+        animation: heroFadeUp 0.8s var(--ease-snappy) forwards;
+      }
+      .hero-animate-1 { animation-delay: 0.1s; }
+      .hero-animate-2 { animation-delay: 0.25s; }
+      .hero-animate-3 { animation-delay: 0.4s; }
+      .hero-animate-4 { animation-delay: 0.55s; }
+      .hero-animate-5 { animation-delay: 0.7s; }
+
+      /* Slide animations */
+      .slide-in-left {
+        opacity: 0;
+        animation: heroSlideIn 0.7s var(--ease-snappy) forwards;
+      }
+
+      .scale-in {
+        opacity: 0;
+        animation: heroScaleIn 0.6s var(--ease-snappy) forwards;
+      }
+
+      /* Section reveal */
+      .reveal-section {
+        opacity: 0;
+        animation: revealUp 0.9s var(--ease-snappy) forwards;
+      }
+      .reveal-delay-1 { animation-delay: 0.1s; }
+      .reveal-delay-2 { animation-delay: 0.2s; }
+      .reveal-delay-3 { animation-delay: 0.3s; }
+      .reveal-delay-4 { animation-delay: 0.4s; }
+
       .animate-fade-in-up {
-        animation: fadeInUp 0.5s ease-out forwards;
+        animation: fadeInUp 0.5s var(--ease-snappy) forwards;
       }
 
       .animate-pop-in {
-        animation: popIn 0.4s ease-out forwards;
+        animation: popIn 0.4s var(--ease-bounce) forwards;
       }
 
       .animate-pulse-booking {
         animation: pulse 2s infinite;
+      }
+
+      .animate-float {
+        animation: float 4s ease-in-out infinite;
+      }
+
+      /* Micro-interactions */
+      .btn-hover {
+        transition: all 0.25s var(--ease-snappy);
+      }
+      .btn-hover:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px -8px rgba(192, 86, 59, 0.4);
+      }
+      .btn-hover:active {
+        transform: translateY(0) scale(0.98);
+      }
+
+      .card-hover {
+        transition: all 0.3s var(--ease-snappy);
+      }
+      .card-hover:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.12);
+      }
+
+      /* Icon spin on hover */
+      .icon-spin:hover .iconify {
+        transition: transform 0.4s var(--ease-snappy);
+        transform: rotate(12deg);
+      }
+
+      /* Smooth link underline */
+      .link-underline {
+        position: relative;
+      }
+      .link-underline::after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: var(--brand-primary);
+        transition: width 0.3s var(--ease-snappy);
+      }
+      .link-underline:hover::after {
+        width: 100%;
       }
     </style>
   <script type="importmap">
