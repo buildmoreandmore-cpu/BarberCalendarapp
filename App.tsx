@@ -25,6 +25,28 @@ const App: React.FC = () => {
     };
   });
 
+  // Demo mode launcher for client view
+  const launchClientDemo = () => {
+    const demoProfile = {
+      name: 'Marcus Demo',
+      hairType: 'curly' as const,
+      growthRate: 'average' as const,
+      weeklyRhythm: 'consistent' as const,
+      lastCutDate: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+    };
+    setAppState({
+      onboardingComplete: true,
+      profile: demoProfile,
+      recommendations: [
+        { date: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString(), score: 'optimal', reason: 'Job interview on Friday — look sharp for first impressions' },
+        { date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), score: 'good', reason: 'Regular 2-week maintenance cycle' },
+        { date: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000).toISOString(), score: 'acceptable', reason: 'Weekend social events coming up' }
+      ],
+      streak: 94
+    });
+    setViewMode('client');
+  };
+
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -109,36 +131,50 @@ const App: React.FC = () => {
           <div className="flex items-center gap-4">
              {viewMode === 'landing' ? (
                <>
-                 <button
-                  onClick={() => setViewMode('barber')}
-                  className="text-xs font-black uppercase text-[#161616] px-4 hover:text-[#c0563b] transition-colors"
-                >
-                  Demo
-                </button>
+                 <div className="hidden md:flex items-center gap-1 bg-[#e5e4e0] p-1 rounded-full">
+                   <button
+                     onClick={launchClientDemo}
+                     className="px-4 py-1.5 rounded-full text-xs font-bold text-[#555] hover:bg-white hover:text-[#161616] transition-all"
+                   >
+                     Client Demo
+                   </button>
+                   <button
+                     onClick={() => setViewMode('barber')}
+                     className="px-4 py-1.5 rounded-full text-xs font-bold text-[#555] hover:bg-white hover:text-[#161616] transition-all"
+                   >
+                     Stylist Demo
+                   </button>
+                 </div>
                  <Button variant="primary" onClick={() => setViewMode('landing')}>Start free trial</Button>
                </>
              ) : (
                <>
+                 <div className="flex items-center gap-1 bg-[#e5e4e0] p-1 rounded-full">
+                   <button
+                     onClick={launchClientDemo}
+                     className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${viewMode === 'client' ? 'bg-white text-[#161616] shadow-sm' : 'text-[#555] hover:text-[#161616]'}`}
+                   >
+                     Client
+                   </button>
+                   <button
+                     onClick={() => setViewMode('barber')}
+                     className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${viewMode === 'barber' ? 'bg-white text-[#161616] shadow-sm' : 'text-[#555] hover:text-[#161616]'}`}
+                   >
+                     Stylist
+                   </button>
+                 </div>
                  <button className="text-[#161616] hover:text-[#c0563b] transition-colors">
                     <span className="iconify text-2xl" data-icon="solar:bell-bing-bold-duotone"></span>
                  </button>
-                 <div className="flex items-center gap-2">
-                    <button 
-                      onClick={() => setViewMode(viewMode === 'barber' ? 'client' : 'barber')}
-                      className="text-[10px] font-black uppercase text-slate-400 hover:text-[#c0563b]"
-                    >
-                      Switch View
-                    </button>
-                    <button className="flex items-center gap-3 px-2 py-2 rounded-full border border-[#e5e4e0] bg-white hover:shadow-md transition-all">
-                      <div className="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs uppercase overflow-hidden">
-                        {viewMode === 'barber' ? (
-                          <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=100&auto=format&fit=crop" className="w-full h-full object-cover" />
-                        ) : (
-                          appState.profile?.name?.[0] || 'U'
-                        )}
-                      </div>
-                    </button>
-                 </div>
+                 <button className="flex items-center gap-3 px-2 py-2 rounded-full border border-[#e5e4e0] bg-white hover:shadow-md transition-all">
+                   <div className="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs uppercase overflow-hidden">
+                     {viewMode === 'barber' ? (
+                       <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=100&auto=format&fit=crop" className="w-full h-full object-cover" />
+                     ) : (
+                       appState.profile?.name?.[0] || 'M'
+                     )}
+                   </div>
+                 </button>
                </>
              )}
           </div>
@@ -147,7 +183,11 @@ const App: React.FC = () => {
 
       <main className="pb-24">
         {viewMode === 'landing' && (
-          <Consultation onComplete={handleConsultationComplete} />
+          <Consultation
+            onComplete={handleConsultationComplete}
+            onClientDemo={launchClientDemo}
+            onBarberDemo={() => setViewMode('barber')}
+          />
         )}
         {viewMode === 'client' && (
           <Dashboard state={appState} onRefresh={refreshRecommendations} />
@@ -165,7 +205,7 @@ const App: React.FC = () => {
                  <span className="iconify text-[#c0563b] text-2xl" data-icon="solar:scissors-bold-duotone"></span>
                  <span className="text-xl font-black text-[#161616] tracking-tighter">Cadence</span>
                </div>
-               <p className="text-[#555] max-w-xs font-medium leading-relaxed">Smart scheduling for barbers. Keep your chair full and your clients coming back.</p>
+               <p className="text-[#555] max-w-xs font-medium leading-relaxed">Smart scheduling for stylists. Keep your chair full and your clients coming back.</p>
                <div className="flex gap-5 opacity-50 items-center">
                   <span className="iconify text-3xl text-[#161616]" data-icon="solar:calendar-bold-duotone"></span>
                   <span className="iconify text-3xl text-[#161616]" data-icon="solar:bell-bing-bold-duotone"></span>
@@ -176,7 +216,7 @@ const App: React.FC = () => {
 
              <div className="grid grid-cols-2 md:grid-cols-3 gap-16">
                 <div className="space-y-4">
-                   <h5 className="text-[10px] font-black uppercase tracking-widest text-[#161616]">For Barbers</h5>
+                   <h5 className="text-[10px] font-black uppercase tracking-widest text-[#161616]">For Stylists</h5>
                    <ul className="space-y-2 text-xs font-bold text-[#555]">
                       <li><a href="#" className="hover:text-[#c0563b]">Smart Scheduling</a></li>
                       <li><a href="#" className="hover:text-[#c0563b]">Client Management</a></li>
@@ -201,7 +241,7 @@ const App: React.FC = () => {
              </div>
           </div>
           <div className="pt-12 border-t border-[#f3f2ee] flex justify-between items-center text-[10px] font-black uppercase tracking-widest text-[#ccc]">
-             <span>© 2025 Cadence. Built for barbers.</span>
+             <span>© 2025 Cadence. Built for stylists.</span>
              <div className="flex gap-4">
                 <a href="#" className="hover:text-[#c0563b]"><span className="iconify" data-icon="solar:letter-bold-duotone"></span></a>
                 <a href="#" className="hover:text-[#c0563b]"><span className="iconify" data-icon="mdi:instagram"></span></a>

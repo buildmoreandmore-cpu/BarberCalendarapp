@@ -11,9 +11,10 @@ interface DashboardProps {
 }
 
 export const Dashboard: React.FC<DashboardProps> = ({ state, onRefresh }) => {
-  const [commentary, setCommentary] = useState("Analyzing your cycle...");
+  const [commentary, setCommentary] = useState("Finding your perfect timing...");
   const [isCommentaryLoading, setIsCommentaryLoading] = useState(false);
   const [selectedSlot, setSelectedSlot] = useState<RecommendedSlot | null>(null);
+  const [bookedSlot, setBookedSlot] = useState<RecommendedSlot | null>(null);
 
   useEffect(() => {
     const fetchCommentary = async () => {
@@ -28,10 +29,10 @@ export const Dashboard: React.FC<DashboardProps> = ({ state, onRefresh }) => {
   }, [state.profile, state.recommendations]);
 
   const formatDate = (dateStr: string) => {
-    return new Date(dateStr).toLocaleDateString('en-US', { 
-      weekday: 'short', 
-      month: 'short', 
-      day: 'numeric' 
+    return new Date(dateStr).toLocaleDateString('en-US', {
+      weekday: 'long',
+      month: 'short',
+      day: 'numeric'
     });
   };
 
@@ -39,144 +40,219 @@ export const Dashboard: React.FC<DashboardProps> = ({ state, onRefresh }) => {
     setSelectedSlot(slot);
   };
 
+  const handleConfirmBooking = () => {
+    if (selectedSlot) {
+      setBookedSlot(selectedSlot);
+      setSelectedSlot(null);
+    }
+  };
+
+  // Get the optimal recommendation
+  const optimalSlot = state.recommendations.find(r => r.score === 'optimal');
+  const otherSlots = state.recommendations.filter(r => r.score !== 'optimal');
+
   return (
-    <div className="max-w-6xl mx-auto px-6 py-12 space-y-8">
-      {/* Strategy Header */}
-      <section className="bg-white border border-[#e5e4e0] rounded-[32px] p-8 md:p-12 shadow-sm relative overflow-hidden">
-        <div className="absolute top-0 right-0 p-12 opacity-5 pointer-events-none">
-          <span className="iconify text-[#c0563b]" data-icon="solar:magic-stick-bold-duotone" style={{ fontSize: '180px' }}></span>
-        </div>
-        
-        <div className="relative z-10 space-y-6">
-          <div className="flex items-center gap-3">
-             <span className="bg-[#fbeee0] text-[#c0563b] px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest">Chair Active</span>
-             <span className="text-slate-400">•</span>
-             <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">{state.profile?.hairType} Master</span>
+    <div className="max-w-4xl mx-auto px-6 py-12 space-y-8">
+      {/* Booking Confirmation Success */}
+      {bookedSlot && (
+        <div className="bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-[32px] p-8 text-white text-center animate-fade-in-up">
+          <div className="w-16 h-16 rounded-full bg-white/20 flex items-center justify-center mx-auto mb-4">
+            <span className="iconify text-4xl" data-icon="solar:check-circle-bold"></span>
           </div>
-          <h1 className="text-5xl font-extrabold text-[#161616] tracking-tight">Welcome, {state.profile?.name.split(' ')[0]}</h1>
-          <p className="text-2xl text-slate-600 font-medium leading-tight max-w-3xl italic">
-            "{isCommentaryLoading ? "..." : commentary}"
+          <h2 className="text-2xl font-bold mb-2">You're booked!</h2>
+          <p className="text-emerald-100 mb-1">{formatDate(bookedSlot.date)}</p>
+          <p className="text-sm text-emerald-200">{bookedSlot.reason}</p>
+          <button
+            onClick={() => setBookedSlot(null)}
+            className="mt-6 text-xs font-bold uppercase tracking-widest text-white/70 hover:text-white"
+          >
+            View other options
+          </button>
+        </div>
+      )}
+
+      {/* Personal Welcome */}
+      {!bookedSlot && (
+        <section className="text-center space-y-4">
+          <h1 className="text-4xl md:text-5xl font-extrabold text-[#161616] tracking-tight">
+            Hey {state.profile?.name.split(' ')[0]}, looking good!
+          </h1>
+          <p className="text-xl text-slate-500 max-w-xl mx-auto">
+            {isCommentaryLoading ? "Finding your perfect timing..." : commentary}
           </p>
-          
-          <div className="flex flex-wrap gap-4 pt-4">
-             <div className="bg-[#f3f2ee] px-6 py-4 rounded-2xl flex items-center gap-4 border border-[#e5e4e0]">
-                <span className="iconify text-orange-600 text-3xl" data-icon="solar:fire-bold-duotone"></span>
-                <div>
-                   <div className="text-[10px] font-black uppercase text-slate-400">Retention Score</div>
-                   <div className="text-xl font-bold">{state.streak}% Loyalty</div>
-                </div>
-             </div>
-             <div className="bg-[#f3f2ee] px-6 py-4 rounded-2xl flex items-center gap-4 border border-[#e5e4e0]">
-                <span className="iconify text-[#c0563b] text-3xl" data-icon="solar:clocks-value-bold-duotone"></span>
-                <div>
-                   <div className="text-[10px] font-black uppercase text-slate-400">Next Slot</div>
-                   <div className="text-xl font-bold">Smart Scheduled</div>
-                </div>
-             </div>
-          </div>
-        </div>
-      </section>
+        </section>
+      )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2 space-y-6">
-          <div className="flex items-center justify-between">
-            <h2 className="text-2xl font-black text-[#161616] flex items-center gap-2">
-              <span className="iconify text-[#c0563b]" data-icon="solar:calendar-date-bold-duotone"></span>
-              Smart Booking Slots
-            </h2>
-            <button onClick={onRefresh} className="text-[#555] hover:text-[#161616] text-xs font-bold uppercase tracking-widest flex items-center gap-1">
-              <span className="iconify" data-icon="solar:refresh-bold-duotone"></span> Recalculate
-            </button>
+      {/* Primary Recommendation - Make it obvious and easy */}
+      {!bookedSlot && optimalSlot && (
+        <section className="bg-gradient-to-br from-[#c0563b] to-[#a64932] rounded-[32px] p-8 md:p-10 text-white shadow-xl shadow-[#c0563b]/20 animate-fade-in-up">
+          <div className="flex items-center gap-2 mb-6">
+            <span className="iconify text-2xl" data-icon="solar:star-bold"></span>
+            <span className="text-sm font-bold uppercase tracking-widest opacity-80">Best time for you</span>
           </div>
 
-          <div className="space-y-4">
-            {state.recommendations.map((rec, idx) => (
-              <div 
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div className="space-y-3">
+              <h2 className="text-3xl md:text-4xl font-extrabold">{formatDate(optimalSlot.date)}</h2>
+              <p className="text-lg text-white/80 max-w-md">{optimalSlot.reason}</p>
+            </div>
+            <Button
+              variant="secondary"
+              onClick={() => handleBookClick(optimalSlot)}
+              className="bg-white text-[#c0563b] hover:bg-white/90 px-8 py-4 text-lg font-bold shrink-0"
+            >
+              Book This Date
+            </Button>
+          </div>
+        </section>
+      )}
+
+      {/* Other Options */}
+      {!bookedSlot && otherSlots.length > 0 && (
+        <section className="space-y-4">
+          <h3 className="text-sm font-black uppercase tracking-widest text-slate-400 text-center">
+            Other good times
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {otherSlots.map((rec, idx) => (
+              <div
                 key={idx}
-                className={`group p-6 rounded-2xl border-2 transition-all duration-300 ${
-                  rec.score === 'optimal' 
-                    ? 'bg-white border-[#c0563b] shadow-lg shadow-[#c0563b]/5' 
-                    : 'bg-white border-[#e5e4e0] opacity-80 hover:opacity-100'
-                }`}
+                className="bg-white rounded-2xl p-6 border border-[#e5e4e0] hover:border-[#c0563b]/30 hover:shadow-lg transition-all group cursor-pointer"
+                onClick={() => handleBookClick(rec)}
               >
-                <div className="flex items-center justify-between gap-4">
-                  <div className="flex items-center gap-5">
-                    <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-2xl ${
-                      rec.score === 'optimal' ? 'bg-[#c0563b] text-white' : 'bg-[#f3f2ee] text-[#161616]'
-                    }`}>
-                      <span className="iconify" data-icon="solar:scissors-bold-duotone"></span>
-                    </div>
-                    <div>
-                      <div className="flex items-center gap-3 mb-1">
-                        <span className="text-xl font-extrabold text-[#161616]">{formatDate(rec.date)}</span>
-                        {rec.score === 'optimal' && (
-                           <span className="bg-[#c0563b] text-white text-[9px] font-black px-2 py-0.5 rounded-full uppercase tracking-widest">Max Fill</span>
-                        )}
-                      </div>
-                      <p className="text-slate-500 font-medium text-sm leading-snug max-w-sm">{rec.reason}</p>
-                    </div>
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <h4 className="text-lg font-bold text-[#161616] group-hover:text-[#c0563b] transition-colors">
+                      {formatDate(rec.date)}
+                    </h4>
+                    <p className="text-sm text-slate-500 mt-1">{rec.reason}</p>
                   </div>
-                  <Button 
-                    variant={rec.score === 'optimal' ? 'primary' : 'secondary'} 
-                    onClick={() => handleBookClick(rec)}
-                  >
-                    Confirm Slot
-                  </Button>
+                  <div className="w-10 h-10 rounded-xl bg-[#f3f2ee] group-hover:bg-[#c0563b] flex items-center justify-center transition-colors">
+                    <span className="iconify text-slate-400 group-hover:text-white transition-colors" data-icon="solar:arrow-right-bold"></span>
+                  </div>
                 </div>
               </div>
             ))}
           </div>
-        </div>
+        </section>
+      )}
 
-        <div className="space-y-8">
-          <div className="bg-white border border-[#e5e4e0] rounded-[24px] p-8 shadow-sm space-y-6">
-            <h3 className="text-lg font-black text-[#161616] flex items-center gap-2">
-              <span className="iconify text-orange-600" data-icon="solar:info-circle-bold-duotone"></span>
-              Inventory Analysis
+      {/* Mini Calendar with recommended dates highlighted */}
+      {!bookedSlot && (
+        <section className="bg-white rounded-[32px] p-8 border border-[#e5e4e0] shadow-sm">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-lg font-bold text-[#161616] flex items-center gap-2">
+              <span className="iconify text-[#c0563b]" data-icon="solar:calendar-bold"></span>
+              Your Schedule
             </h3>
-            <div className="space-y-4">
-               <div className="flex justify-between items-end">
-                  <span className="text-xs font-black uppercase text-slate-400">Chair Utilization</span>
-                  <span className="text-xs font-bold text-[#c0563b] italic">Peak Capacity</span>
-               </div>
-               <div className="h-4 bg-[#f3f2ee] rounded-full overflow-hidden p-1">
-                  <div className="h-full bg-[#c0563b] rounded-full" style={{ width: '40%' }}></div>
-               </div>
-               <p className="text-xs text-slate-500 font-medium leading-relaxed">
-                  Based on current data, your chair has <b>8 open gaps</b> next week. Cadence is currently filling these via growth-triggered outreach.
-               </p>
+            <span className="text-sm text-slate-500">January 2026</span>
+          </div>
+
+          {/* Calendar Grid */}
+          <div className="grid grid-cols-7 gap-1 mb-4">
+            {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((day, i) => (
+              <div key={i} className="text-center text-xs font-bold text-slate-400 py-2">{day}</div>
+            ))}
+            {/* Generate calendar days - Jan 2026 starts on Thursday */}
+            {[...Array(4)].map((_, i) => (
+              <div key={`empty-${i}`} className="aspect-square"></div>
+            ))}
+            {[...Array(31)].map((_, i) => {
+              const day = i + 1;
+              const isRecommended = state.recommendations.some(r => {
+                const recDay = new Date(r.date).getDate();
+                return recDay === day;
+              });
+              const isOptimal = state.recommendations.some(r => {
+                const recDay = new Date(r.date).getDate();
+                return recDay === day && r.score === 'optimal';
+              });
+              const isToday = day === 6;
+              return (
+                <div
+                  key={day}
+                  className={`aspect-square flex items-center justify-center rounded-xl text-sm font-bold transition-all cursor-pointer ${
+                    isOptimal
+                      ? 'bg-[#c0563b] text-white shadow-md'
+                      : isRecommended
+                      ? 'bg-[#fbeee0] text-[#c0563b]'
+                      : isToday
+                      ? 'bg-[#161616] text-white'
+                      : 'hover:bg-[#f3f2ee] text-[#161616]'
+                  }`}
+                >
+                  {day}
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Legend */}
+          <div className="flex items-center justify-center gap-6 text-xs text-slate-500">
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded bg-[#c0563b]"></div>
+              <span>Best time</span>
             </div>
-            <div className="pt-4 border-t border-[#f3f2ee]">
-               <div className="flex gap-3">
-                  <span className="iconify text-[#c0563b] shrink-0 mt-1" data-icon="solar:check-read-bold-duotone"></span>
-                  <p className="text-xs font-bold text-[#161616]">Outreach automation is active. Churn prediction is down 12% MoM.</p>
-               </div>
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded bg-[#fbeee0]"></div>
+              <span>Good option</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded bg-[#161616]"></div>
+              <span>Today</span>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Your Rhythm Card - Personal, not business metrics */}
+      {!bookedSlot && (
+        <section className="bg-[#f3f2ee] rounded-[32px] p-8 border border-[#e5e4e0]">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-12 h-12 rounded-2xl bg-[#161616] flex items-center justify-center">
+              <span className="iconify text-white text-2xl" data-icon="solar:user-bold"></span>
+            </div>
+            <div>
+              <h3 className="text-lg font-bold text-[#161616]">Your Preferences</h3>
+              <p className="text-sm text-slate-500">Based on your lifestyle</p>
             </div>
           </div>
 
-          <div className="bg-[#161616] rounded-[24px] p-8 text-white space-y-4">
-             <h4 className="text-xl font-bold">Scaling Tactics</h4>
-             <ul className="space-y-4">
-                {[
-                  { icon: 'solar:water-drop-bold-duotone', text: 'Upsell matte clay after-care' },
-                  { icon: 'solar:calendar-mark-bold-duotone', text: 'Enable 48hr growth outreach' },
-                  { icon: 'solar:star-bold-duotone', text: 'Premium event surge pricing' }
-                ].map((item, i) => (
-                  <li key={i} className="flex gap-3 items-center">
-                    <span className="iconify text-[#c0563b]" data-icon={item.icon}></span>
-                    <span className="text-xs font-medium text-slate-300">{item.text}</span>
-                  </li>
-                ))}
-             </ul>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            <div className="bg-white rounded-2xl p-4 text-center">
+              <div className="text-2xl font-bold text-[#c0563b]">
+                {state.profile?.growthRate === 'fast' ? '1 week' : state.profile?.growthRate === 'average' ? '2-3 wks' : '1 month'}
+              </div>
+              <div className="text-xs text-slate-500 mt-1">Your cycle</div>
+            </div>
+            <div className="bg-white rounded-2xl p-4 text-center">
+              <div className="text-2xl font-bold text-[#161616]">
+                {state.profile?.weeklyRhythm === 'busy-midweek' ? 'Weekdays' : state.profile?.weeklyRhythm === 'social-weekend' ? 'Weekends' : 'Flexible'}
+              </div>
+              <div className="text-xs text-slate-500 mt-1">Peak time</div>
+            </div>
+            <div className="bg-white rounded-2xl p-4 text-center col-span-2 md:col-span-1">
+              <div className="text-2xl font-bold text-emerald-600">Fresh</div>
+              <div className="text-xs text-slate-500 mt-1">Status</div>
+            </div>
           </div>
-        </div>
-      </div>
 
+          <button
+            onClick={onRefresh}
+            className="mt-6 text-xs font-bold uppercase tracking-widest text-slate-400 hover:text-[#c0563b] flex items-center gap-2 mx-auto transition-colors"
+          >
+            <span className="iconify" data-icon="solar:refresh-bold-duotone"></span>
+            Refresh recommendations
+          </button>
+        </section>
+      )}
+
+      {/* Booking Modal */}
       {selectedSlot && (
-        <BookingModal 
-          slot={selectedSlot} 
+        <BookingModal
+          slot={selectedSlot}
           onClose={() => setSelectedSlot(null)}
-          onConfirm={() => setSelectedSlot(null)}
+          onConfirm={handleConfirmBooking}
         />
       )}
     </div>

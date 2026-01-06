@@ -5,16 +5,31 @@ import { Button } from './Button';
 
 interface ConsultationProps {
   onComplete: (profile: UserProfile) => void;
+  onClientDemo?: () => void;
+  onBarberDemo?: () => void;
 }
 
-export const Consultation: React.FC<ConsultationProps> = ({ onComplete }) => {
+export const Consultation: React.FC<ConsultationProps> = ({ onComplete, onClientDemo, onBarberDemo }) => {
   const [step, setStep] = useState(0); // 0 is Landing Page
   const [profile, setProfile] = useState<Partial<UserProfile>>({
-    hairType: 'straight',
+    hairType: 'medium',
     growthRate: 'average',
     weeklyRhythm: 'consistent',
     lastCutDate: new Date().toISOString().split('T')[0]
   });
+  const [selectedEvents, setSelectedEvents] = useState<string[]>([]);
+
+  const toggleEvent = (eventId: string) => {
+    if (eventId === 'none') {
+      setSelectedEvents([]);
+    } else {
+      setSelectedEvents(prev =>
+        prev.includes(eventId)
+          ? prev.filter(e => e !== eventId)
+          : [...prev.filter(e => e !== 'none'), eventId]
+      );
+    }
+  };
 
   const nextStep = () => setStep(prev => prev + 1);
   
@@ -363,15 +378,91 @@ export const Consultation: React.FC<ConsultationProps> = ({ onComplete }) => {
               </div>
            </div>
 
+           {/* See It In Action - Demo Section */}
+           <div className="bg-white rounded-[40px] p-8 md:p-16 shadow-sm border border-[#e5e4e0]">
+              <div className="text-center mb-12">
+                <span className="bg-[#fbeee0] text-[#c0563b] px-4 py-2 rounded-full font-black text-xs uppercase tracking-widest">Try It Now</span>
+                <h2 className="text-4xl md:text-5xl font-extrabold text-[#161616] tracking-tight mt-6">
+                  See it in action.
+                </h2>
+                <p className="text-lg text-slate-500 mt-4 max-w-xl mx-auto">
+                  Experience Cadence from both sides—as a client getting smart recommendations, or as a stylist managing bookings.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Client Demo Card */}
+                <div className="bg-[#f3f2ee] rounded-3xl p-8 border border-[#e5e4e0] hover:shadow-lg transition-all group">
+                  <div className="w-16 h-16 rounded-2xl bg-[#161616] flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                    <span className="iconify text-white text-3xl" data-icon="solar:user-bold"></span>
+                  </div>
+                  <h3 className="text-2xl font-black text-[#161616] mb-3">Client Experience</h3>
+                  <p className="text-slate-500 mb-6">See how Cadence learns your schedule and recommends the perfect booking times based on your lifestyle.</p>
+                  <ul className="space-y-2 mb-8 text-sm">
+                    <li className="flex items-center gap-2 text-slate-600">
+                      <span className="iconify text-[#c0563b]" data-icon="solar:check-circle-bold"></span>
+                      Smart appointment recommendations
+                    </li>
+                    <li className="flex items-center gap-2 text-slate-600">
+                      <span className="iconify text-[#c0563b]" data-icon="solar:check-circle-bold"></span>
+                      Event-aware scheduling
+                    </li>
+                    <li className="flex items-center gap-2 text-slate-600">
+                      <span className="iconify text-[#c0563b]" data-icon="solar:check-circle-bold"></span>
+                      Personalized booking cadence
+                    </li>
+                  </ul>
+                  {onClientDemo && (
+                    <Button variant="dark" onClick={onClientDemo} className="w-full">Try Client Demo</Button>
+                  )}
+                </div>
+
+                {/* Stylist Demo Card */}
+                <div className="bg-[#161616] rounded-3xl p-8 border border-white/10 hover:shadow-lg transition-all group">
+                  <div className="w-16 h-16 rounded-2xl bg-[#c0563b] flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                    <span className="iconify text-white text-3xl" data-icon="solar:scissors-bold"></span>
+                  </div>
+                  <h3 className="text-2xl font-black text-white mb-3">Stylist Dashboard</h3>
+                  <p className="text-slate-400 mb-6">See how stylists receive smart booking requests with full client context and insights.</p>
+                  <ul className="space-y-2 mb-8 text-sm">
+                    <li className="flex items-center gap-2 text-slate-300">
+                      <span className="iconify text-[#c0563b]" data-icon="solar:check-circle-bold"></span>
+                      See why clients need each date
+                    </li>
+                    <li className="flex items-center gap-2 text-slate-300">
+                      <span className="iconify text-[#c0563b]" data-icon="solar:check-circle-bold"></span>
+                      Client insights & history
+                    </li>
+                    <li className="flex items-center gap-2 text-slate-300">
+                      <span className="iconify text-[#c0563b]" data-icon="solar:check-circle-bold"></span>
+                      Approve, decline, or reschedule
+                    </li>
+                  </ul>
+                  {onBarberDemo && (
+                    <Button variant="primary" onClick={onBarberDemo} className="w-full">Try Stylist Demo</Button>
+                  )}
+                </div>
+              </div>
+           </div>
+
            {/* Works for Everyone */}
            <div className="text-center bg-[#161616] rounded-[40px] p-12 md:p-20">
               <span className="bg-[#c0563b] text-white px-4 py-2 rounded-full font-black text-xs uppercase tracking-widest">For Everyone</span>
               <h2 className="text-3xl md:text-5xl font-extrabold text-white tracking-tight mt-8">
-                Barbershops. Salons. Solo stylists.
+                Barbers. Stylists. Salons. Spas.
               </h2>
               <p className="text-xl text-slate-300 mt-6 max-w-2xl mx-auto">
-                Whether you're running a multi-chair shop or working independently, Cadence adapts to your workflow.
+                Any recurring personal service. Whether you're running a multi-chair shop or working independently, Cadence adapts to your workflow.
               </p>
+              <div className="flex flex-wrap justify-center gap-6 mt-8 text-sm text-slate-400">
+                <span>Independent stylists</span>
+                <span>•</span>
+                <span>Barbershops</span>
+                <span>•</span>
+                <span>Hair salons</span>
+                <span>•</span>
+                <span>Spas & aestheticians</span>
+              </div>
               <div className="flex flex-wrap justify-center gap-4 mt-10">
                 <Button onClick={nextStep} variant="primary" className="px-8">Start free trial</Button>
               </div>
@@ -381,110 +472,166 @@ export const Consultation: React.FC<ConsultationProps> = ({ onComplete }) => {
     );
   }
 
-  // Actual Consultation Steps (Using the lighter theme)
+  // 3-step Consultation (Lifestyle-focused with better curation)
   return (
     <div className="max-w-xl mx-auto py-24 px-6">
       <div className="mb-12">
         <div className="flex items-center gap-2 mb-4">
           <div className="h-1 w-12 bg-[#c0563b] rounded"></div>
-          <span className="text-xs font-black uppercase tracking-widest text-[#555]">Consultation Phase {step}/4</span>
+          <span className="text-xs font-black uppercase tracking-widest text-[#555]">Quick Setup {step}/3</span>
         </div>
         <h1 className="text-5xl font-extrabold text-[#161616] mb-4 tracking-tight">
-          {step === 1 && "Let's start with the basics."}
-          {step === 2 && "How does it grow?"}
-          {step === 3 && "What's your rhythm?"}
-          {step === 4 && "Final calibration."}
+          {step === 1 && "Let's get you set up."}
+          {step === 2 && "What's your lifestyle like?"}
+          {step === 3 && "Any big moments coming up?"}
         </h1>
+        <p className="text-lg text-slate-500">
+          {step === 1 && "We'll use this to recommend the perfect booking times."}
+          {step === 2 && "This helps us understand when you need to look your best."}
+          {step === 3 && "We'll make sure you're fresh for what matters."}
+        </p>
       </div>
 
       <div className="space-y-6">
         {step === 1 && (
           <div className="space-y-6">
             <div>
-              <label className="block text-xs font-black uppercase text-[#161616] mb-2 tracking-widest">Full Name</label>
-              <input 
+              <label className="block text-xs font-black uppercase text-[#161616] mb-2 tracking-widest">Your Name</label>
+              <input
                 type="text"
-                placeholder="Marcus Kay"
+                placeholder="Marcus"
+                value={profile.name || ''}
                 className="w-full bg-white border-2 border-[#e5e4e0] rounded-2xl px-6 py-4 focus:outline-none focus:border-[#c0563b] text-[#161616] font-bold"
                 onChange={(e) => setProfile({ ...profile, name: e.target.value })}
               />
             </div>
-            <div className="grid grid-cols-2 gap-3">
-              {['straight', 'wavy', 'curly', 'coily'].map((type) => (
-                <button
-                  key={type}
-                  onClick={() => setProfile({ ...profile, hairType: type as any })}
-                  className={`p-6 rounded-2xl border-2 text-left transition-all ${profile.hairType === type ? 'border-[#c0563b] bg-[#c0563b]/5 text-[#161616]' : 'border-[#e5e4e0] bg-white text-[#555]'}`}
-                >
-                  <span className="capitalize font-bold">{type}</span>
-                </button>
-              ))}
+            <div>
+              <label className="block text-xs font-black uppercase text-[#161616] mb-3 tracking-widest">How often do you typically get a cut?</label>
+              <div className="grid grid-cols-1 gap-3">
+                {[
+                  { id: 'fast', label: 'Every week', desc: 'I like to stay tight at all times', icon: 'solar:fire-bold-duotone' },
+                  { id: 'average', label: 'Every 2-3 weeks', desc: 'Regular maintenance, balanced approach', icon: 'solar:calendar-bold-duotone' },
+                  { id: 'slow', label: 'Once a month or longer', desc: 'I let it grow out between cuts', icon: 'solar:clock-circle-bold-duotone' }
+                ].map((rate) => (
+                  <button
+                    key={rate.id}
+                    onClick={() => setProfile({ ...profile, growthRate: rate.id as any })}
+                    className={`p-5 rounded-2xl border-2 text-left transition-all flex items-center gap-4 ${profile.growthRate === rate.id ? 'border-[#c0563b] bg-[#c0563b]/5 text-[#161616]' : 'border-[#e5e4e0] bg-white text-[#555] hover:border-[#c0563b]/30'}`}
+                  >
+                    <span className={`iconify text-2xl ${profile.growthRate === rate.id ? 'text-[#c0563b]' : 'text-slate-400'}`} data-icon={rate.icon}></span>
+                    <div>
+                      <div className="font-bold">{rate.label}</div>
+                      <div className="text-sm opacity-60">{rate.desc}</div>
+                    </div>
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
         )}
 
         {step === 2 && (
-          <div className="space-y-4">
-            <div className="grid grid-cols-1 gap-3">
-              {[
-                { id: 'slow', label: 'Slow', desc: '1 month between cuts.' },
-                { id: 'average', label: 'Average', desc: '2-3 week cycle.' },
-                { id: 'fast', label: 'Fast', desc: 'Weekly maintenance.' }
-              ].map((rate) => (
-                <button
-                  key={rate.id}
-                  onClick={() => setProfile({ ...profile, growthRate: rate.id as any })}
-                  className={`p-6 rounded-2xl border-2 text-left transition-all ${profile.growthRate === rate.id ? 'border-[#c0563b] bg-[#c0563b]/5 text-[#161616]' : 'border-[#e5e4e0] bg-white text-[#555]'}`}
-                >
-                  <div className="font-bold text-lg">{rate.label}</div>
-                  <div className="text-sm opacity-60 font-medium">{rate.desc}</div>
-                </button>
-              ))}
+          <div className="space-y-6">
+            <div>
+              <label className="block text-xs font-black uppercase text-[#161616] mb-3 tracking-widest">When do you need to look your sharpest?</label>
+              <div className="grid grid-cols-1 gap-3">
+                {[
+                  { id: 'busy-midweek', label: 'Weekdays for work', desc: 'Meetings, clients, presentations', icon: 'solar:case-round-bold-duotone' },
+                  { id: 'social-weekend', label: 'Weekends for social', desc: 'Dates, events, going out with friends', icon: 'solar:sun-bold-duotone' },
+                  { id: 'consistent', label: 'Always fresh, no exceptions', desc: "I never want to look rough", icon: 'solar:star-bold-duotone' }
+                ].map((rhythm) => (
+                  <button
+                    key={rhythm.id}
+                    onClick={() => setProfile({ ...profile, weeklyRhythm: rhythm.id as any })}
+                    className={`p-5 rounded-2xl border-2 text-left transition-all flex items-center gap-4 ${profile.weeklyRhythm === rhythm.id ? 'border-[#c0563b] bg-[#c0563b]/5 text-[#161616]' : 'border-[#e5e4e0] bg-white text-[#555] hover:border-[#c0563b]/30'}`}
+                  >
+                    <span className={`iconify text-2xl ${profile.weeklyRhythm === rhythm.id ? 'text-[#c0563b]' : 'text-slate-400'}`} data-icon={rhythm.icon}></span>
+                    <div>
+                      <div className="font-bold">{rhythm.label}</div>
+                      <div className="text-sm opacity-60">{rhythm.desc}</div>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div>
+              <label className="block text-xs font-black uppercase text-[#161616] mb-3 tracking-widest">How much does looking fresh matter to you?</label>
+              <div className="grid grid-cols-3 gap-3">
+                {[
+                  { id: 'low', label: 'Casual', desc: "It's not a big deal" },
+                  { id: 'medium', label: 'Important', desc: 'I care about my appearance' },
+                  { id: 'high', label: 'Critical', desc: 'First impressions matter' }
+                ].map((priority) => (
+                  <button
+                    key={priority.id}
+                    onClick={() => setProfile({ ...profile, hairType: priority.id as any })}
+                    className={`p-4 rounded-2xl border-2 text-center transition-all ${profile.hairType === priority.id ? 'border-[#c0563b] bg-[#c0563b]/5 text-[#161616]' : 'border-[#e5e4e0] bg-white text-[#555] hover:border-[#c0563b]/30'}`}
+                  >
+                    <div className="font-bold text-sm">{priority.label}</div>
+                    <div className="text-[10px] opacity-60 mt-1">{priority.desc}</div>
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
         )}
 
         {step === 3 && (
-          <div className="space-y-4">
-            <div className="grid grid-cols-1 gap-3">
-              {[
-                { id: 'social-weekend', label: 'Social Weekend', desc: 'Peak look for Friday-Sunday.' },
-                { id: 'busy-midweek', label: 'Professional Midweek', desc: 'Peak look for Tue-Thu meetings.' },
-                { id: 'consistent', label: 'Consistent', desc: 'Stay fresh regardless of day.' }
-              ].map((rhythm) => (
-                <button
-                  key={rhythm.id}
-                  onClick={() => setProfile({ ...profile, weeklyRhythm: rhythm.id as any })}
-                  className={`p-6 rounded-2xl border-2 text-left transition-all ${profile.weeklyRhythm === rhythm.id ? 'border-[#c0563b] bg-[#c0563b]/5 text-[#161616]' : 'border-[#e5e4e0] bg-white text-[#555]'}`}
-                >
-                  <div className="font-bold text-lg">{rhythm.label}</div>
-                  <div className="text-sm opacity-60 font-medium">{rhythm.desc}</div>
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {step === 4 && (
-          <div className="space-y-4">
+          <div className="space-y-6">
             <div>
-              <label className="block text-xs font-black uppercase text-[#161616] mb-2 tracking-widest">Last Haircut Date</label>
-              <input 
+              <label className="block text-xs font-black uppercase text-[#161616] mb-2 tracking-widest">When was your last haircut?</label>
+              <input
                 type="date"
                 value={profile.lastCutDate}
                 className="w-full bg-white border-2 border-[#e5e4e0] rounded-2xl px-6 py-4 focus:outline-none focus:border-[#c0563b] text-[#161616] font-bold"
                 onChange={(e) => setProfile({ ...profile, lastCutDate: e.target.value })}
               />
+              <p className="text-xs text-slate-400 mt-2">This helps us calculate your ideal timing</p>
+            </div>
+            <div>
+              <label className="block text-xs font-black uppercase text-[#161616] mb-3 tracking-widest">Any upcoming events? (Select all that apply)</label>
+              <div className="grid grid-cols-2 gap-3">
+                {[
+                  { id: 'interview', label: 'Job interview', icon: 'solar:case-round-bold-duotone' },
+                  { id: 'wedding', label: 'Wedding', icon: 'solar:heart-bold-duotone' },
+                  { id: 'date', label: 'First date', icon: 'solar:hearts-bold-duotone' },
+                  { id: 'trip', label: 'Trip/vacation', icon: 'solar:airplane-bold-duotone' },
+                  { id: 'photo', label: 'Photo shoot', icon: 'solar:camera-bold-duotone' },
+                  { id: 'none', label: 'Nothing specific', icon: 'solar:calendar-minimalistic-bold-duotone' }
+                ].map((event) => {
+                  const isSelected = event.id === 'none'
+                    ? selectedEvents.length === 0
+                    : selectedEvents.includes(event.id);
+                  return (
+                    <button
+                      key={event.id}
+                      onClick={() => toggleEvent(event.id)}
+                      className={`p-4 rounded-2xl border-2 transition-all flex items-center gap-3 ${
+                        isSelected
+                          ? 'border-[#c0563b] bg-[#c0563b]/5 text-[#161616]'
+                          : 'border-[#e5e4e0] bg-white text-[#555] hover:border-[#c0563b]/30'
+                      }`}
+                    >
+                      <span className={`iconify text-xl ${isSelected ? 'text-[#c0563b]' : 'text-slate-400'}`} data-icon={event.icon}></span>
+                      <span className="font-bold text-sm">{event.label}</span>
+                      {isSelected && event.id !== 'none' && (
+                        <span className="iconify ml-auto text-[#c0563b]" data-icon="solar:check-circle-bold"></span>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+              <p className="text-xs text-slate-400 mt-3">We'll remind you to book before these events</p>
             </div>
           </div>
         )}
 
         <div className="pt-8 flex justify-between items-center">
-          <Button variant="ghost" onClick={() => setStep(step - 1)}>Back</Button>
-          {step < 4 ? (
+          <Button variant="ghost" onClick={() => step > 1 ? setStep(step - 1) : setStep(0)}>Back</Button>
+          {step < 3 ? (
             <Button variant="dark" onClick={nextStep} disabled={step === 1 && !profile.name}>Continue</Button>
           ) : (
-            <Button variant="primary" onClick={finish} className="px-10">Finalize Strategy</Button>
+            <Button variant="primary" onClick={finish} className="px-10">Get My Schedule</Button>
           )}
         </div>
       </div>
