@@ -503,10 +503,11 @@ export const BarberDashboard: React.FC = () => {
             <h2 className="text-sm font-black uppercase tracking-widest text-slate-400">Notifications</h2>
             <div className="space-y-2 relative z-10">
               {notifications.map(notif => (
-                <div
+                <button
                   key={notif.id}
-                  onClick={(e) => { e.preventDefault(); e.stopPropagation(); setSelectedNotificationId(notif.id); markAsRead(notif.id); setSelectedClientId(notif.clientId); }}
-                  className={`p-4 rounded-2xl border-2 transition-all cursor-pointer relative ${selectedNotificationId === notif.id ? 'bg-white border-[#c0563b] shadow-lg' : notif.read ? 'bg-white/50 border-transparent hover:border-[#e5e4e0]' : 'bg-white border-[#e5e4e0] hover:shadow-md'}`}
+                  type="button"
+                  onClick={() => { setSelectedNotificationId(notif.id); markAsRead(notif.id); setSelectedClientId(notif.clientId); }}
+                  className={`w-full text-left p-4 rounded-2xl border-2 transition-all cursor-pointer relative ${selectedNotificationId === notif.id ? 'bg-white border-[#c0563b] shadow-lg' : notif.read ? 'bg-white/50 border-transparent hover:border-[#e5e4e0]' : 'bg-white border-[#e5e4e0] hover:shadow-md'}`}
                 >
                   <div className="flex items-start gap-3">
                     <div className="relative">
@@ -525,7 +526,7 @@ export const BarberDashboard: React.FC = () => {
                     </div>
                     {!notif.read && <div className="w-2 h-2 rounded-full bg-[#c0563b] flex-shrink-0 mt-2"></div>}
                   </div>
-                </div>
+                </button>
               ))}
             </div>
           </div>
@@ -670,10 +671,11 @@ export const BarberDashboard: React.FC = () => {
             <h2 className="text-sm font-black uppercase tracking-widest text-slate-400">All Clients ({clients.length})</h2>
             <div className="space-y-2 relative z-10">
               {clients.map(client => (
-                <div
+                <button
                   key={client.id}
-                  onClick={(e) => { e.preventDefault(); e.stopPropagation(); setSelectedClientId(client.id); setSelectedNotificationId(null); }}
-                  className={`p-4 rounded-2xl border-2 transition-all cursor-pointer group relative ${selectedClientId === client.id && mainTab === 'clients' ? 'bg-white border-[#c0563b] shadow-lg' : 'bg-white/50 border-transparent hover:border-[#e5e4e0] hover:bg-white hover:shadow-md'}`}
+                  type="button"
+                  onClick={() => { setSelectedClientId(client.id); setSelectedNotificationId(null); }}
+                  className={`w-full text-left p-4 rounded-2xl border-2 transition-all cursor-pointer group relative ${selectedClientId === client.id && mainTab === 'clients' ? 'bg-white border-[#c0563b] shadow-lg' : 'bg-white/50 border-transparent hover:border-[#e5e4e0] hover:bg-white hover:shadow-md'}`}
                 >
                   <div className="flex items-center gap-3">
                     <img src={client.avatar} className="w-12 h-12 rounded-xl object-cover group-hover:scale-105 transition-transform" alt={client.name} />
@@ -686,7 +688,7 @@ export const BarberDashboard: React.FC = () => {
                       <div className="text-[10px] text-slate-400">Priority</div>
                     </div>
                   </div>
-                </div>
+                </button>
               ))}
             </div>
           </div>
