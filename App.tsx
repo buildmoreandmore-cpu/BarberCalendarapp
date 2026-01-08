@@ -42,6 +42,15 @@ const App: React.FC = () => {
   };
 
   const [isLoading, setIsLoading] = useState(false);
+  const [showClientNotifications, setShowClientNotifications] = useState(false);
+
+  // Mock client notifications
+  const clientNotifications = [
+    { id: '1', type: 'confirmed', message: 'Your appointment on Jan 12 has been confirmed by James', timestamp: '2 hours ago', read: false },
+    { id: '2', type: 'reminder', message: 'Reminder: Haircut tomorrow at 10:00 AM', timestamp: '1 day ago', read: true },
+    { id: '3', type: 'tip', message: 'Tip: Add your appointment to your calendar so you don\'t forget', timestamp: '2 days ago', read: true }
+  ];
+  const unreadClientNotifications = clientNotifications.filter(n => !n.read).length;
 
   useEffect(() => {
     localStorage.setItem('lineup_state', JSON.stringify(appState));
@@ -94,31 +103,28 @@ const App: React.FC = () => {
       <nav className="py-8 px-6">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div
-            className="flex items-center gap-2 cursor-pointer"
+            className="flex items-center gap-3 cursor-pointer"
             onClick={() => setViewMode('landing')}
           >
-            <span className="iconify text-[#c0563b] text-4xl" data-icon="solar:scissors-bold-duotone"></span>
-            <span className="text-3xl font-black text-[#161616] tracking-tighter">Lineup</span>
+            <div className="flex items-center gap-2">
+              <span className="iconify text-[#c0563b] text-4xl" data-icon="solar:scissors-bold-duotone"></span>
+              <span className="text-3xl font-black text-[#161616] tracking-tighter">Lineup</span>
+            </div>
+            <span className="px-2 py-0.5 bg-[#161616] text-white text-[10px] font-bold uppercase tracking-wider rounded">Demo</span>
           </div>
           
           <div className="flex items-center gap-4">
              {viewMode === 'landing' ? (
                <>
-                 <div className="hidden md:flex items-center gap-1 bg-[#e5e4e0] p-1 rounded-full">
-                   <button
-                     onClick={launchClientDemo}
-                     className="px-4 py-1.5 rounded-full text-xs font-bold text-[#555] hover:bg-white hover:text-[#161616] transition-all"
-                   >
-                     Client Demo
-                   </button>
-                   <button
-                     onClick={() => setViewMode('barber')}
-                     className="px-4 py-1.5 rounded-full text-xs font-bold text-[#555] hover:bg-white hover:text-[#161616] transition-all"
-                   >
-                     Stylist Demo
-                   </button>
-                 </div>
-                 <Button variant="primary" onClick={() => setViewMode('landing')}>Start free trial</Button>
+                 <button
+                   onClick={() => setViewMode('barber')}
+                   className="hidden md:block text-xs font-bold text-[#555] hover:text-[#c0563b] transition-colors"
+                 >
+                   Stylist Dashboard
+                 </button>
+                 <Button variant="primary" onClick={launchClientDemo}>
+                   Take the Lifestyle Quiz
+                 </Button>
                </>
              ) : (
                <>
@@ -136,9 +142,61 @@ const App: React.FC = () => {
                      Stylist
                    </button>
                  </div>
-                 <button className="text-[#161616] hover:text-[#c0563b] transition-colors">
-                    <span className="iconify text-2xl" data-icon="solar:bell-bing-bold-duotone"></span>
-                 </button>
+                 <div className="relative">
+                   <button
+                     onClick={() => setShowClientNotifications(!showClientNotifications)}
+                     className="text-[#161616] hover:text-[#c0563b] transition-colors relative"
+                   >
+                     <span className="iconify text-2xl" data-icon="solar:bell-bing-bold-duotone"></span>
+                     {unreadClientNotifications > 0 && (
+                       <span className="absolute -top-1 -right-1 bg-[#c0563b] text-white text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center">
+                         {unreadClientNotifications}
+                       </span>
+                     )}
+                   </button>
+
+                   {/* Notification Dropdown */}
+                   {showClientNotifications && viewMode === 'client' && (
+                     <div className="absolute right-0 top-full mt-2 w-80 bg-white rounded-2xl shadow-xl border border-[#e5e4e0] overflow-hidden z-50">
+                       <div className="p-4 border-b border-[#e5e4e0] flex items-center justify-between">
+                         <h3 className="font-bold text-[#161616]">Notifications</h3>
+                         <button className="text-xs text-[#c0563b] font-bold">Mark all read</button>
+                       </div>
+                       <div className="max-h-80 overflow-y-auto">
+                         {clientNotifications.map(notif => (
+                           <div
+                             key={notif.id}
+                             className={`p-4 border-b border-[#f3f2ee] hover:bg-[#f3f2ee] transition-colors ${!notif.read ? 'bg-[#fbeee0]/30' : ''}`}
+                           >
+                             <div className="flex items-start gap-3">
+                               <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
+                                 notif.type === 'confirmed' ? 'bg-emerald-100 text-emerald-600' :
+                                 notif.type === 'reminder' ? 'bg-orange-100 text-orange-600' :
+                                 'bg-blue-100 text-blue-600'
+                               }`}>
+                                 <span className="iconify text-lg" data-icon={
+                                   notif.type === 'confirmed' ? 'solar:check-circle-bold' :
+                                   notif.type === 'reminder' ? 'solar:alarm-bold' :
+                                   'solar:lightbulb-bolt-bold'
+                                 }></span>
+                               </div>
+                               <div className="flex-1">
+                                 <p className="text-sm text-[#161616]">{notif.message}</p>
+                                 <p className="text-xs text-slate-400 mt-1">{notif.timestamp}</p>
+                               </div>
+                               {!notif.read && (
+                                 <div className="w-2 h-2 rounded-full bg-[#c0563b] flex-shrink-0 mt-2"></div>
+                               )}
+                             </div>
+                           </div>
+                         ))}
+                       </div>
+                       <div className="p-3 bg-[#f3f2ee] text-center">
+                         <button className="text-xs font-bold text-[#c0563b]">View all notifications</button>
+                       </div>
+                     </div>
+                   )}
+                 </div>
                  <button className="flex items-center gap-3 px-2 py-2 rounded-full border border-[#e5e4e0] bg-white hover:shadow-md transition-all">
                    <div className="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs uppercase overflow-hidden">
                      {viewMode === 'barber' ? (

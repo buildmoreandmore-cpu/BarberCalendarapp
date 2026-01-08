@@ -70,6 +70,68 @@ export const Dashboard: React.FC<DashboardProps> = ({ state, onRefresh }) => {
   const [isCommentaryLoading, setIsCommentaryLoading] = useState(false);
   const [selectedSlot, setSelectedSlot] = useState<RecommendedSlot | null>(null);
   const [bookedSlot, setBookedSlot] = useState<RecommendedSlot | null>(null);
+  const [calendarDropdownId, setCalendarDropdownId] = useState<string | null>(null);
+
+  // Notification preferences
+  const [notifPrefs, setNotifPrefs] = useState({
+    email: true,
+    text: false,
+    reminder24h: true,
+    reminder1h: true
+  });
+
+  // Generate Google Calendar link
+  const getGoogleCalendarLink = (apt: typeof BOOKED_APPOINTMENTS[0]) => {
+    const startDate = new Date(`${apt.date}T${apt.time.replace(' AM', ':00').replace(' PM', ':00')}`);
+    if (apt.time.includes('PM') && !apt.time.includes('12:')) {
+      startDate.setHours(startDate.getHours() + 12);
+    }
+    const endDate = new Date(startDate.getTime() + 60 * 60 * 1000); // 1 hour appointment
+
+    const formatGoogleDate = (d: Date) => d.toISOString().replace(/-|:|\.\d{3}/g, '');
+
+    const params = new URLSearchParams({
+      action: 'TEMPLATE',
+      text: `${apt.service} with ${apt.barberName}`,
+      dates: `${formatGoogleDate(startDate)}/${formatGoogleDate(endDate)}`,
+      details: `Your ${apt.service.toLowerCase()} appointment at ${CONNECTED_BARBER.shop}`,
+      location: CONNECTED_BARBER.shop
+    });
+
+    return `https://calendar.google.com/calendar/render?${params.toString()}`;
+  };
+
+  // Generate ICS file for Apple Calendar
+  const downloadICSFile = (apt: typeof BOOKED_APPOINTMENTS[0]) => {
+    const startDate = new Date(`${apt.date}T${apt.time.replace(' AM', ':00').replace(' PM', ':00')}`);
+    if (apt.time.includes('PM') && !apt.time.includes('12:')) {
+      startDate.setHours(startDate.getHours() + 12);
+    }
+    const endDate = new Date(startDate.getTime() + 60 * 60 * 1000);
+
+    const formatICSDate = (d: Date) => d.toISOString().replace(/-|:|\.\d{3}/g, '').slice(0, -1);
+
+    const icsContent = `BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Lineup//Appointment//EN
+BEGIN:VEVENT
+UID:${apt.id}@lineup.app
+DTSTAMP:${formatICSDate(new Date())}Z
+DTSTART:${formatICSDate(startDate)}Z
+DTEND:${formatICSDate(endDate)}Z
+SUMMARY:${apt.service} with ${apt.barberName}
+DESCRIPTION:Your ${apt.service.toLowerCase()} appointment at ${CONNECTED_BARBER.shop}
+LOCATION:${CONNECTED_BARBER.shop}
+END:VEVENT
+END:VCALENDAR`;
+
+    const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `appointment-${apt.date}.ics`;
+    link.click();
+    setCalendarDropdownId(null);
+  };
 
   // Use API recommendations if available, otherwise use demo data
   const recommendations = state.recommendations.length > 0 ? state.recommendations : DEMO_RECOMMENDATIONS;
@@ -159,9 +221,36 @@ export const Dashboard: React.FC<DashboardProps> = ({ state, onRefresh }) => {
                   }`}>
                     {apt.status === 'confirmed' ? 'Confirmed' : apt.status === 'pending' ? 'Pending' : apt.status}
                   </span>
-                  <button className="text-slate-400 hover:text-[#c0563b]">
-                    <span className="iconify text-xl" data-icon="solar:menu-dots-bold"></span>
-                  </button>
+                  <div className="relative">
+                    <button
+                      onClick={() => setCalendarDropdownId(calendarDropdownId === apt.id ? null : apt.id)}
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#f3f2ee] hover:bg-[#e5e4e0] text-[#161616] text-xs font-bold transition-colors"
+                    >
+                      <span className="iconify" data-icon="solar:calendar-add-bold"></span>
+                      Add to Calendar
+                    </button>
+                    {calendarDropdownId === apt.id && (
+                      <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-xl shadow-xl border border-[#e5e4e0] overflow-hidden z-50">
+                        <a
+                          href={getGoogleCalendarLink(apt)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={() => setCalendarDropdownId(null)}
+                          className="flex items-center gap-3 px-4 py-3 hover:bg-[#f3f2ee] transition-colors"
+                        >
+                          <span className="iconify text-lg text-[#4285F4]" data-icon="logos:google-calendar"></span>
+                          <span className="text-sm font-medium text-[#161616]">Google Calendar</span>
+                        </a>
+                        <button
+                          onClick={() => downloadICSFile(apt)}
+                          className="w-full flex items-center gap-3 px-4 py-3 hover:bg-[#f3f2ee] transition-colors border-t border-[#f3f2ee]"
+                        >
+                          <span className="iconify text-lg text-slate-600" data-icon="solar:calendar-bold"></span>
+                          <span className="text-sm font-medium text-[#161616]">Apple Calendar</span>
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             ))}
@@ -360,6 +449,79 @@ export const Dashboard: React.FC<DashboardProps> = ({ state, onRefresh }) => {
             <span className="iconify" data-icon="solar:refresh-bold-duotone"></span>
             Refresh recommendations
           </button>
+        </section>
+      )}
+
+      {/* Notification Settings */}
+      {!bookedSlot && (
+        <section className="bg-white rounded-[32px] p-8 border border-[#e5e4e0]">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-12 h-12 rounded-2xl bg-[#c0563b] flex items-center justify-center">
+              <span className="iconify text-white text-2xl" data-icon="solar:bell-bing-bold"></span>
+            </div>
+            <div>
+              <h3 className="text-lg font-bold text-[#161616]">Reminders</h3>
+              <p className="text-sm text-slate-500">How would you like to be notified?</p>
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            {/* Notification channels */}
+            <div className="flex flex-col sm:flex-row gap-4">
+              <label className="flex-1 flex items-center justify-between p-4 bg-[#f3f2ee] rounded-xl cursor-pointer hover:bg-[#e5e4e0] transition-colors">
+                <div className="flex items-center gap-3">
+                  <span className="iconify text-xl text-[#161616]" data-icon="solar:letter-bold"></span>
+                  <span className="font-medium text-[#161616]">Email</span>
+                </div>
+                <div
+                  onClick={() => setNotifPrefs(p => ({ ...p, email: !p.email }))}
+                  className={`w-11 h-6 rounded-full transition-colors relative cursor-pointer ${notifPrefs.email ? 'bg-[#c0563b]' : 'bg-slate-300'}`}
+                >
+                  <div className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-all ${notifPrefs.email ? 'left-5' : 'left-0.5'}`}></div>
+                </div>
+              </label>
+
+              <label className="flex-1 flex items-center justify-between p-4 bg-[#f3f2ee] rounded-xl cursor-pointer hover:bg-[#e5e4e0] transition-colors">
+                <div className="flex items-center gap-3">
+                  <span className="iconify text-xl text-[#161616]" data-icon="solar:phone-bold"></span>
+                  <span className="font-medium text-[#161616]">Text</span>
+                </div>
+                <div
+                  onClick={() => setNotifPrefs(p => ({ ...p, text: !p.text }))}
+                  className={`w-11 h-6 rounded-full transition-colors relative cursor-pointer ${notifPrefs.text ? 'bg-[#c0563b]' : 'bg-slate-300'}`}
+                >
+                  <div className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-all ${notifPrefs.text ? 'left-5' : 'left-0.5'}`}></div>
+                </div>
+              </label>
+            </div>
+
+            {/* Reminder timing */}
+            <div className="pt-4 border-t border-[#f3f2ee]">
+              <p className="text-xs font-bold uppercase tracking-widest text-slate-400 mb-3">Remind me</p>
+              <div className="flex flex-wrap gap-3">
+                <button
+                  onClick={() => setNotifPrefs(p => ({ ...p, reminder24h: !p.reminder24h }))}
+                  className={`px-4 py-2 rounded-full text-sm font-bold transition-all ${
+                    notifPrefs.reminder24h
+                      ? 'bg-[#c0563b] text-white'
+                      : 'bg-[#f3f2ee] text-[#555] hover:bg-[#e5e4e0]'
+                  }`}
+                >
+                  24 hours before
+                </button>
+                <button
+                  onClick={() => setNotifPrefs(p => ({ ...p, reminder1h: !p.reminder1h }))}
+                  className={`px-4 py-2 rounded-full text-sm font-bold transition-all ${
+                    notifPrefs.reminder1h
+                      ? 'bg-[#c0563b] text-white'
+                      : 'bg-[#f3f2ee] text-[#555] hover:bg-[#e5e4e0]'
+                  }`}
+                >
+                  1 hour before
+                </button>
+              </div>
+            </div>
+          </div>
         </section>
       )}
 

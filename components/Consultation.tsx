@@ -59,9 +59,9 @@ export const Consultation: React.FC<ConsultationProps> = ({ onComplete, onClient
             </p>
             <div className="flex flex-col items-start gap-4 hero-animate hero-animate-3">
               <Button variant="primary" onClick={nextStep} className="px-10 py-4 text-lg btn-hover">
-                Start free trial
+                Take the Lifestyle Quiz
               </Button>
-              <span className="text-xs text-slate-500 font-medium ml-4">No credit card required</span>
+              <span className="text-xs text-slate-500 font-medium ml-4">See how personalized scheduling works</span>
             </div>
           </div>
           
@@ -494,26 +494,26 @@ export const Consultation: React.FC<ConsultationProps> = ({ onComplete, onClient
               </div>
            </div>
 
-           {/* See It In Action - Demo Section */}
+           {/* See It In Action Section */}
            <div className="bg-white rounded-[40px] p-8 md:p-16 shadow-sm border border-[#e5e4e0]">
               <div className="text-center mb-12">
-                <span className="bg-[#fbeee0] text-[#c0563b] px-4 py-2 rounded-full font-black text-xs uppercase tracking-widest">Try It Now</span>
+                <span className="bg-[#fbeee0] text-[#c0563b] px-4 py-2 rounded-full font-black text-xs uppercase tracking-widest">Preview</span>
                 <h2 className="text-4xl md:text-5xl font-extrabold text-[#161616] tracking-tight mt-6">
-                  See it in action.
+                  Experience it yourself.
                 </h2>
                 <p className="text-lg text-slate-500 mt-4 max-w-xl mx-auto">
-                  Experience Lineup from both sides—as a client getting smart recommendations, or as a stylist managing bookings.
+                  See how Lineup works—take the lifestyle quiz for personalized recommendations, or preview the stylist dashboard.
                 </p>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Client Demo Card */}
+                {/* Client Experience Card */}
                 <div className="bg-[#f3f2ee] rounded-3xl p-8 border border-[#e5e4e0] card-hover group reveal-section reveal-delay-1">
                   <div className="w-16 h-16 rounded-2xl bg-[#161616] flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
                     <span className="iconify text-white text-3xl" data-icon="solar:user-bold"></span>
                   </div>
-                  <h3 className="text-2xl font-black text-[#161616] mb-3">Client Experience</h3>
-                  <p className="text-slate-500 mb-6">See how Lineup learns your schedule and recommends the perfect booking times based on your lifestyle.</p>
+                  <h3 className="text-2xl font-black text-[#161616] mb-3">Your Personalized Experience</h3>
+                  <p className="text-slate-500 mb-6">Take a quick quiz and see how Lineup recommends the perfect booking times based on your lifestyle.</p>
                   <ul className="space-y-2 mb-8 text-sm">
                     <li className="flex items-center gap-2 text-slate-600">
                       <span className="iconify text-[#c0563b]" data-icon="solar:check-circle-bold"></span>
@@ -529,17 +529,17 @@ export const Consultation: React.FC<ConsultationProps> = ({ onComplete, onClient
                     </li>
                   </ul>
                   {onClientDemo && (
-                    <Button variant="dark" onClick={onClientDemo} className="w-full btn-hover">Try Client Demo</Button>
+                    <Button variant="dark" onClick={onClientDemo} className="w-full btn-hover">Take the Lifestyle Quiz</Button>
                   )}
                 </div>
 
-                {/* Stylist Demo Card */}
+                {/* Stylist Dashboard Card */}
                 <div className="bg-[#161616] rounded-3xl p-8 border border-white/10 card-hover group reveal-section reveal-delay-2">
                   <div className="w-16 h-16 rounded-2xl bg-[#c0563b] flex items-center justify-center mb-6 group-hover:scale-110 group-hover:-rotate-3 transition-all duration-300">
                     <span className="iconify text-white text-3xl" data-icon="solar:scissors-bold"></span>
                   </div>
                   <h3 className="text-2xl font-black text-white mb-3">Stylist Dashboard</h3>
-                  <p className="text-slate-400 mb-6">See how stylists receive smart booking requests with full client context and insights.</p>
+                  <p className="text-slate-400 mb-6">Preview what stylists see—smart booking requests with full client context and insights.</p>
                   <ul className="space-y-2 mb-8 text-sm">
                     <li className="flex items-center gap-2 text-slate-300">
                       <span className="iconify text-[#c0563b]" data-icon="solar:check-circle-bold"></span>
@@ -555,7 +555,7 @@ export const Consultation: React.FC<ConsultationProps> = ({ onComplete, onClient
                     </li>
                   </ul>
                   {onBarberDemo && (
-                    <Button variant="primary" onClick={onBarberDemo} className="w-full btn-hover">Try Stylist Demo</Button>
+                    <Button variant="primary" onClick={onBarberDemo} className="w-full btn-hover">View Stylist Dashboard</Button>
                   )}
                 </div>
               </div>
