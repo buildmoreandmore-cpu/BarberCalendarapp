@@ -602,33 +602,149 @@ export const Consultation: React.FC<ConsultationProps> = ({ onComplete, onClient
     );
   }
 
-  // 4-step Consultation (Personal & Lifestyle-focused)
+  // State for path selection and custom dates
+  const [path, setPath] = useState<'barber' | 'stylist' | null>(null);
+  const [selectedServices, setSelectedServices] = useState<string[]>([]);
+  const [customDates, setCustomDates] = useState<{date: string, reason: string}[]>([]);
+  const [showAddDate, setShowAddDate] = useState(false);
+  const [newDate, setNewDate] = useState('');
+  const [newReason, setNewReason] = useState('');
+
+  const toggleService = (serviceId: string) => {
+    setSelectedServices(prev =>
+      prev.includes(serviceId)
+        ? prev.filter(s => s !== serviceId)
+        : [...prev, serviceId]
+    );
+  };
+
+  const addCustomDate = () => {
+    if (newDate && newReason) {
+      setCustomDates(prev => [...prev, { date: newDate, reason: newReason }]);
+      setNewDate('');
+      setNewReason('');
+      setShowAddDate(false);
+    }
+  };
+
+  const removeCustomDate = (index: number) => {
+    setCustomDates(prev => prev.filter((_, i) => i !== index));
+  };
+
+  // Total steps based on path
+  const totalSteps = path ? 3 : 0;
+  const currentStep = step;
+
+  // Path selection screen
+  if (step === 1 && !path) {
+    return (
+      <div className="max-w-xl mx-auto py-24 px-6">
+        <div className="mb-12 text-center">
+          <h1 className="text-5xl font-extrabold text-[#161616] mb-4 tracking-tight">
+            Who do you see?
+          </h1>
+          <p className="text-lg text-slate-500">
+            We'll tailor your experience.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 gap-4">
+          <button
+            onClick={() => setPath('barber')}
+            className="p-8 rounded-2xl border-2 border-[#e5e4e0] bg-white hover:border-[#c0563b] hover:bg-[#c0563b]/5 transition-all text-left group"
+          >
+            <div className="flex items-center gap-4">
+              <div className="w-14 h-14 rounded-2xl bg-[#161616] flex items-center justify-center group-hover:bg-[#c0563b] transition-colors">
+                <span className="iconify text-white text-3xl" data-icon="solar:scissors-bold"></span>
+              </div>
+              <div>
+                <div className="text-xl font-bold text-[#161616]">Barber</div>
+                <div className="text-sm text-slate-500">Cuts, fades, lineups</div>
+              </div>
+            </div>
+          </button>
+
+          <button
+            onClick={() => setPath('stylist')}
+            className="p-8 rounded-2xl border-2 border-[#e5e4e0] bg-white hover:border-[#c0563b] hover:bg-[#c0563b]/5 transition-all text-left group"
+          >
+            <div className="flex items-center gap-4">
+              <div className="w-14 h-14 rounded-2xl bg-[#161616] flex items-center justify-center group-hover:bg-[#c0563b] transition-colors">
+                <span className="iconify text-white text-3xl" data-icon="solar:magic-stick-3-bold"></span>
+              </div>
+              <div>
+                <div className="text-xl font-bold text-[#161616]">Hair Stylist</div>
+                <div className="text-sm text-slate-500">Cuts, color, styling</div>
+              </div>
+            </div>
+          </button>
+        </div>
+
+        <div className="pt-8">
+          <Button variant="ghost" onClick={() => setStep(0)}>Back</Button>
+        </div>
+      </div>
+    );
+  }
+
+  // Quiz content based on path
+  const getStepContent = () => {
+    if (path === 'barber') {
+      return {
+        1: {
+          title: "Let's get started.",
+          subtitle: "Quick questions to set up your schedule."
+        },
+        2: {
+          title: "What's your week like?",
+          subtitle: "This helps us recommend the best times."
+        },
+        3: {
+          title: "Anything coming up?",
+          subtitle: "We'll time your cut right before."
+        }
+      };
+    } else {
+      return {
+        1: {
+          title: "Let's get started.",
+          subtitle: "Quick questions to set up your schedule."
+        },
+        2: {
+          title: "What's your routine like?",
+          subtitle: "This helps us recommend the best times."
+        },
+        3: {
+          title: "Anything coming up?",
+          subtitle: "We'll time your appointment right before."
+        }
+      };
+    }
+  };
+
+  const stepContent = getStepContent();
+
   return (
     <div className="max-w-xl mx-auto py-24 px-6">
       <div className="mb-12">
         <div className="flex items-center gap-2 mb-4">
           <div className="h-1 w-12 bg-[#c0563b] rounded"></div>
-          <span className="text-xs font-black uppercase tracking-widest text-[#555]">Quick Setup {step}/4</span>
+          <span className="text-xs font-black uppercase tracking-widest text-[#555]">Step {currentStep}/{totalSteps}</span>
         </div>
         <h1 className="text-5xl font-extrabold text-[#161616] mb-4 tracking-tight">
-          {step === 1 && "First, tell us about you."}
-          {step === 2 && "How do you like to stay fresh?"}
-          {step === 3 && "What does your life look like?"}
-          {step === 4 && "Any special moments coming up?"}
+          {stepContent[currentStep as keyof typeof stepContent]?.title}
         </h1>
         <p className="text-lg text-slate-500">
-          {step === 1 && "We'll remember your important dates so you always look your best."}
-          {step === 2 && "This helps us find your perfect rhythm."}
-          {step === 3 && "We'll work around your schedule, not the other way around."}
-          {step === 4 && "We'll make sure you're looking sharp when it matters most."}
+          {stepContent[currentStep as keyof typeof stepContent]?.subtitle}
         </p>
       </div>
 
       <div className="space-y-6">
-        {step === 1 && (
+        {/* STEP 1: The Basics */}
+        {step === 1 && path && (
           <div className="space-y-6">
             <div>
-              <label className="block text-xs font-black uppercase text-[#161616] mb-2 tracking-widest">What should we call you?</label>
+              <label className="block text-xs font-black uppercase text-[#161616] mb-2 tracking-widest">Your name</label>
               <input
                 type="text"
                 placeholder="Marcus"
@@ -638,148 +754,167 @@ export const Consultation: React.FC<ConsultationProps> = ({ onComplete, onClient
               />
             </div>
             <div>
-              <label className="block text-xs font-black uppercase text-[#161616] mb-2 tracking-widest">
-                <span className="flex items-center gap-2">
-                  <span className="iconify text-[#c0563b]" data-icon="solar:cake-bold-duotone"></span>
-                  When's your birthday?
-                </span>
-              </label>
+              <label className="block text-xs font-black uppercase text-[#161616] mb-2 tracking-widest">Birthday</label>
               <input
                 type="date"
                 className="w-full bg-white border-2 border-[#e5e4e0] rounded-2xl px-6 py-4 focus:outline-none focus:border-[#c0563b] text-[#161616] font-bold"
                 onChange={(e) => setProfile({ ...profile, birthday: e.target.value } as any)}
               />
-              <p className="text-xs text-slate-400 mt-2">We'll make sure you're fresh for your big day every year</p>
+              <p className="text-xs text-slate-400 mt-2">We'll remind you before your birthday</p>
             </div>
             <div>
-              <label className="block text-xs font-black uppercase text-[#161616] mb-2 tracking-widest">When was your last haircut?</label>
+              <label className="block text-xs font-black uppercase text-[#161616] mb-2 tracking-widest">
+                {path === 'barber' ? 'When was your last cut?' : 'When was your last appointment?'}
+              </label>
               <input
                 type="date"
                 value={profile.lastCutDate}
                 className="w-full bg-white border-2 border-[#e5e4e0] rounded-2xl px-6 py-4 focus:outline-none focus:border-[#c0563b] text-[#161616] font-bold"
                 onChange={(e) => setProfile({ ...profile, lastCutDate: e.target.value })}
               />
-              <p className="text-xs text-slate-400 mt-2">This helps us calculate your ideal timing</p>
             </div>
-          </div>
-        )}
 
-        {step === 2 && (
-          <div className="space-y-6">
-            <div>
-              <label className="block text-xs font-black uppercase text-[#161616] mb-3 tracking-widest">How often do you like to get a cut?</label>
-              <div className="grid grid-cols-1 gap-3">
-                {[
-                  { id: 'fast', label: 'Every week', desc: 'I like to stay tight at all times', icon: 'solar:fire-bold-duotone' },
-                  { id: 'average', label: 'Every 2-3 weeks', desc: 'Regular maintenance, balanced approach', icon: 'solar:calendar-bold-duotone' },
-                  { id: 'slow', label: 'Once a month or longer', desc: 'I let it grow out between cuts', icon: 'solar:clock-circle-bold-duotone' }
-                ].map((rate) => (
-                  <button
-                    key={rate.id}
-                    onClick={() => setProfile({ ...profile, growthRate: rate.id as any })}
-                    className={`p-5 rounded-2xl border-2 text-left transition-all flex items-center gap-4 ${profile.growthRate === rate.id ? 'border-[#c0563b] bg-[#c0563b]/5 text-[#161616]' : 'border-[#e5e4e0] bg-white text-[#555] hover:border-[#c0563b]/30'}`}
-                  >
-                    <span className={`iconify text-2xl ${profile.growthRate === rate.id ? 'text-[#c0563b]' : 'text-slate-400'}`} data-icon={rate.icon}></span>
-                    <div>
+            {/* Barber: Cut frequency */}
+            {path === 'barber' && (
+              <div>
+                <label className="block text-xs font-black uppercase text-[#161616] mb-3 tracking-widest">How often do you get a cut?</label>
+                <div className="grid grid-cols-1 gap-3">
+                  {[
+                    { id: 'fast', label: 'Weekly' },
+                    { id: 'average', label: 'Every 2-3 weeks' },
+                    { id: 'slow', label: 'Monthly or longer' }
+                  ].map((rate) => (
+                    <button
+                      key={rate.id}
+                      onClick={() => setProfile({ ...profile, growthRate: rate.id as any })}
+                      className={`p-4 rounded-2xl border-2 text-left transition-all ${profile.growthRate === rate.id ? 'border-[#c0563b] bg-[#c0563b]/5 text-[#161616]' : 'border-[#e5e4e0] bg-white text-[#555] hover:border-[#c0563b]/30'}`}
+                    >
                       <div className="font-bold">{rate.label}</div>
-                      <div className="text-sm opacity-60">{rate.desc}</div>
-                    </div>
-                  </button>
-                ))}
+                    </button>
+                  ))}
+                </div>
               </div>
-            </div>
-            <div>
-              <label className="block text-xs font-black uppercase text-[#161616] mb-3 tracking-widest">How important is staying fresh to you?</label>
-              <div className="grid grid-cols-1 gap-3">
-                {[
-                  { id: 'low', label: 'Pretty chill about it', desc: "I'm flexible, it's not a big deal", icon: 'solar:sun-2-bold-duotone' },
-                  { id: 'medium', label: 'I care about my look', desc: 'Looking good is part of who I am', icon: 'solar:mirror-bold-duotone' },
-                  { id: 'high', label: 'Never caught slipping', desc: 'First impressions are everything', icon: 'solar:crown-bold-duotone' }
-                ].map((priority) => (
-                  <button
-                    key={priority.id}
-                    onClick={() => setProfile({ ...profile, hairType: priority.id as any })}
-                    className={`p-5 rounded-2xl border-2 text-left transition-all flex items-center gap-4 ${profile.hairType === priority.id ? 'border-[#c0563b] bg-[#c0563b]/5 text-[#161616]' : 'border-[#e5e4e0] bg-white text-[#555] hover:border-[#c0563b]/30'}`}
-                  >
-                    <span className={`iconify text-2xl ${profile.hairType === priority.id ? 'text-[#c0563b]' : 'text-slate-400'}`} data-icon={priority.icon}></span>
-                    <div>
-                      <div className="font-bold">{priority.label}</div>
-                      <div className="text-sm opacity-60">{priority.desc}</div>
-                    </div>
-                  </button>
-                ))}
+            )}
+
+            {/* Stylist: Services */}
+            {path === 'stylist' && (
+              <div>
+                <label className="block text-xs font-black uppercase text-[#161616] mb-3 tracking-widest">What services do you usually get?</label>
+                <div className="grid grid-cols-2 gap-3">
+                  {[
+                    { id: 'cut', label: 'Cut' },
+                    { id: 'color', label: 'Color' },
+                    { id: 'highlights', label: 'Highlights' },
+                    { id: 'blowout', label: 'Blowout/Styling' },
+                    { id: 'treatment', label: 'Treatment' }
+                  ].map((service) => (
+                    <button
+                      key={service.id}
+                      onClick={() => toggleService(service.id)}
+                      className={`p-4 rounded-2xl border-2 text-center transition-all ${selectedServices.includes(service.id) ? 'border-[#c0563b] bg-[#c0563b]/5 text-[#161616]' : 'border-[#e5e4e0] bg-white text-[#555] hover:border-[#c0563b]/30'}`}
+                    >
+                      <div className="font-bold text-sm">{service.label}</div>
+                    </button>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
           </div>
         )}
 
-        {step === 3 && (
+        {/* STEP 2: Schedule */}
+        {step === 2 && path && (
           <div className="space-y-6">
+            {/* Stylist: Appointment frequency */}
+            {path === 'stylist' && (
+              <div>
+                <label className="block text-xs font-black uppercase text-[#161616] mb-3 tracking-widest">How often do you book appointments?</label>
+                <div className="grid grid-cols-1 gap-3">
+                  {[
+                    { id: 'fast', label: 'Every few weeks' },
+                    { id: 'average', label: 'Monthly' },
+                    { id: 'slow', label: 'Every 6-8 weeks', desc: 'Color touch-ups' },
+                    { id: 'asneeded', label: 'As needed' }
+                  ].map((freq) => (
+                    <button
+                      key={freq.id}
+                      onClick={() => setProfile({ ...profile, growthRate: freq.id as any })}
+                      className={`p-4 rounded-2xl border-2 text-left transition-all ${profile.growthRate === freq.id ? 'border-[#c0563b] bg-[#c0563b]/5 text-[#161616]' : 'border-[#e5e4e0] bg-white text-[#555] hover:border-[#c0563b]/30'}`}
+                    >
+                      <div className="font-bold">{freq.label}</div>
+                      {freq.desc && <div className="text-xs text-slate-400">{freq.desc}</div>}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
             <div>
-              <label className="block text-xs font-black uppercase text-[#161616] mb-3 tracking-widest">When do you need to look your sharpest?</label>
+              <label className="block text-xs font-black uppercase text-[#161616] mb-3 tracking-widest">
+                {path === 'barber' ? 'When do you need to look sharp?' : 'When do you need to look your best?'}
+              </label>
               <div className="grid grid-cols-1 gap-3">
                 {[
-                  { id: 'busy-midweek', label: 'Weekdays for work', desc: 'Meetings, clients, presentations', icon: 'solar:case-round-bold-duotone' },
-                  { id: 'social-weekend', label: 'Weekends for social', desc: 'Dates, events, going out with friends', icon: 'solar:sun-bold-duotone' },
-                  { id: 'consistent', label: 'Always fresh, every day', desc: "I never want to look rough", icon: 'solar:star-bold-duotone' }
+                  { id: 'busy-midweek', label: 'Weekdays', desc: 'Work, meetings' },
+                  { id: 'social-weekend', label: 'Weekends', desc: 'Social, events' },
+                  { id: 'consistent', label: 'Both equally' }
                 ].map((rhythm) => (
                   <button
                     key={rhythm.id}
                     onClick={() => setProfile({ ...profile, weeklyRhythm: rhythm.id as any })}
-                    className={`p-5 rounded-2xl border-2 text-left transition-all flex items-center gap-4 ${profile.weeklyRhythm === rhythm.id ? 'border-[#c0563b] bg-[#c0563b]/5 text-[#161616]' : 'border-[#e5e4e0] bg-white text-[#555] hover:border-[#c0563b]/30'}`}
+                    className={`p-4 rounded-2xl border-2 text-left transition-all ${profile.weeklyRhythm === rhythm.id ? 'border-[#c0563b] bg-[#c0563b]/5 text-[#161616]' : 'border-[#e5e4e0] bg-white text-[#555] hover:border-[#c0563b]/30'}`}
                   >
-                    <span className={`iconify text-2xl ${profile.weeklyRhythm === rhythm.id ? 'text-[#c0563b]' : 'text-slate-400'}`} data-icon={rhythm.icon}></span>
-                    <div>
-                      <div className="font-bold">{rhythm.label}</div>
-                      <div className="text-sm opacity-60">{rhythm.desc}</div>
-                    </div>
+                    <div className="font-bold">{rhythm.label}</div>
+                    {rhythm.desc && <div className="text-xs text-slate-400">{rhythm.desc}</div>}
                   </button>
                 ))}
               </div>
             </div>
-            <div>
-              <label className="block text-xs font-black uppercase text-[#161616] mb-3 tracking-widest">How often do you travel?</label>
-              <div className="grid grid-cols-1 gap-3">
-                {[
-                  { id: 'rarely', label: 'Rarely or never', desc: 'I stay local most of the time', icon: 'solar:home-smile-bold-duotone' },
-                  { id: 'sometimes', label: 'A few times a year', desc: 'Occasional trips and vacations', icon: 'solar:suitcase-bold-duotone' },
-                  { id: 'often', label: 'Frequently', desc: 'I travel a lot for work or fun', icon: 'solar:airplane-bold-duotone' }
-                ].map((travel) => (
-                  <button
-                    key={travel.id}
-                    onClick={() => setProfile({ ...profile, travelFrequency: travel.id } as any)}
-                    className={`p-5 rounded-2xl border-2 text-left transition-all flex items-center gap-4 ${(profile as any).travelFrequency === travel.id ? 'border-[#c0563b] bg-[#c0563b]/5 text-[#161616]' : 'border-[#e5e4e0] bg-white text-[#555] hover:border-[#c0563b]/30'}`}
-                  >
-                    <span className={`iconify text-2xl ${(profile as any).travelFrequency === travel.id ? 'text-[#c0563b]' : 'text-slate-400'}`} data-icon={travel.icon}></span>
-                    <div>
+
+            {/* Barber: Travel frequency */}
+            {path === 'barber' && (
+              <div>
+                <label className="block text-xs font-black uppercase text-[#161616] mb-3 tracking-widest">Do you travel often?</label>
+                <div className="grid grid-cols-1 gap-3">
+                  {[
+                    { id: 'rarely', label: 'Not really' },
+                    { id: 'sometimes', label: 'A few times a year' },
+                    { id: 'often', label: 'Frequently' }
+                  ].map((travel) => (
+                    <button
+                      key={travel.id}
+                      onClick={() => setProfile({ ...profile, travelFrequency: travel.id } as any)}
+                      className={`p-4 rounded-2xl border-2 text-left transition-all ${(profile as any).travelFrequency === travel.id ? 'border-[#c0563b] bg-[#c0563b]/5 text-[#161616]' : 'border-[#e5e4e0] bg-white text-[#555] hover:border-[#c0563b]/30'}`}
+                    >
                       <div className="font-bold">{travel.label}</div>
-                      <div className="text-sm opacity-60">{travel.desc}</div>
-                    </div>
-                  </button>
-                ))}
+                    </button>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
           </div>
         )}
 
-        {step === 4 && (
+        {/* STEP 3: Events */}
+        {step === 3 && path && (
           <div className="space-y-6">
             <div>
-              <label className="block text-xs font-black uppercase text-[#161616] mb-3 tracking-widest">Any important dates coming up?</label>
-              <p className="text-sm text-slate-500 mb-4">We'll make sure you're looking fresh for these moments</p>
               <div className="grid grid-cols-2 gap-3">
-                {[
-                  { id: 'anniversary', label: 'Anniversary', icon: 'solar:heart-bold-duotone' },
-                  { id: 'wedding', label: 'Wedding', icon: 'solar:crown-star-bold-duotone' },
-                  { id: 'vacation', label: 'Vacation', icon: 'solar:palm-tree-bold-duotone' },
-                  { id: 'interview', label: 'Job interview', icon: 'solar:case-round-bold-duotone' },
-                  { id: 'date', label: 'First date', icon: 'solar:hearts-bold-duotone' },
-                  { id: 'reunion', label: 'Family reunion', icon: 'solar:users-group-rounded-bold-duotone' },
-                  { id: 'graduation', label: 'Graduation', icon: 'solar:square-academic-cap-bold-duotone' },
-                  { id: 'photo', label: 'Photo shoot', icon: 'solar:camera-bold-duotone' },
-                  { id: 'party', label: 'Party/Event', icon: 'solar:confetti-bold-duotone' },
-                  { id: 'none', label: 'Nothing specific', icon: 'solar:calendar-minimalistic-bold-duotone' }
-                ].map((event) => {
+                {(path === 'barber' ? [
+                  { id: 'wedding', label: 'Wedding' },
+                  { id: 'interview', label: 'Job interview' },
+                  { id: 'vacation', label: 'Vacation' },
+                  { id: 'meeting', label: 'Important meeting' },
+                  { id: 'date', label: 'Date' },
+                  { id: 'none', label: 'Nothing right now' }
+                ] : [
+                  { id: 'wedding', label: 'Wedding' },
+                  { id: 'event', label: 'Special event' },
+                  { id: 'vacation', label: 'Vacation' },
+                  { id: 'photo', label: 'Photo shoot' },
+                  { id: 'date', label: 'Date' },
+                  { id: 'none', label: 'Nothing right now' }
+                ]).map((event) => {
                   const isSelected = event.id === 'none'
                     ? selectedEvents.length === 0
                     : selectedEvents.includes(event.id);
@@ -787,16 +922,15 @@ export const Consultation: React.FC<ConsultationProps> = ({ onComplete, onClient
                     <button
                       key={event.id}
                       onClick={() => toggleEvent(event.id)}
-                      className={`p-4 rounded-2xl border-2 transition-all flex items-center gap-3 ${
+                      className={`p-4 rounded-2xl border-2 transition-all flex items-center justify-between ${
                         isSelected
                           ? 'border-[#c0563b] bg-[#c0563b]/5 text-[#161616]'
                           : 'border-[#e5e4e0] bg-white text-[#555] hover:border-[#c0563b]/30'
                       }`}
                     >
-                      <span className={`iconify text-xl ${isSelected ? 'text-[#c0563b]' : 'text-slate-400'}`} data-icon={event.icon}></span>
                       <span className="font-bold text-sm">{event.label}</span>
                       {isSelected && event.id !== 'none' && (
-                        <span className="iconify ml-auto text-[#c0563b]" data-icon="solar:check-circle-bold"></span>
+                        <span className="iconify text-[#c0563b]" data-icon="solar:check-circle-bold"></span>
                       )}
                     </button>
                   );
@@ -804,26 +938,95 @@ export const Consultation: React.FC<ConsultationProps> = ({ onComplete, onClient
               </div>
             </div>
 
-            {/* Optional: Add specific date for an event */}
+            {/* Date picker for selected event */}
             {selectedEvents.length > 0 && selectedEvents[0] !== 'none' && (
-              <div className="bg-[#fbeee0] rounded-2xl p-5 border-2 border-[#c0563b]/20">
-                <label className="block text-xs font-black uppercase text-[#c0563b] mb-2 tracking-widest">
-                  When's your {selectedEvents[0].replace('-', ' ')}?
+              <div className="bg-[#f3f2ee] rounded-2xl p-5">
+                <label className="block text-xs font-black uppercase text-[#161616] mb-2 tracking-widest">
+                  When is it?
                 </label>
                 <input
                   type="date"
                   className="w-full bg-white border-2 border-[#e5e4e0] rounded-xl px-4 py-3 focus:outline-none focus:border-[#c0563b] text-[#161616] font-bold"
                   onChange={(e) => setProfile({ ...profile, upcomingEventDate: e.target.value } as any)}
                 />
-                <p className="text-xs text-[#c0563b]/70 mt-2">We'll schedule you 1-2 days before</p>
+                <p className="text-xs text-slate-400 mt-2">We'll schedule you 1-2 days before</p>
               </div>
             )}
+
+            {/* Add custom date section */}
+            <div className="border-t border-[#e5e4e0] pt-6">
+              {!showAddDate ? (
+                <button
+                  onClick={() => setShowAddDate(true)}
+                  className="flex items-center gap-2 text-sm font-bold text-[#c0563b] hover:text-[#a64932] transition-colors"
+                >
+                  <span className="iconify text-lg" data-icon="solar:add-circle-bold"></span>
+                  Add another date
+                </button>
+              ) : (
+                <div className="bg-[#f3f2ee] rounded-2xl p-5 space-y-4">
+                  <div>
+                    <label className="block text-xs font-black uppercase text-[#161616] mb-2 tracking-widest">Date</label>
+                    <input
+                      type="date"
+                      value={newDate}
+                      className="w-full bg-white border-2 border-[#e5e4e0] rounded-xl px-4 py-3 focus:outline-none focus:border-[#c0563b] text-[#161616] font-bold"
+                      onChange={(e) => setNewDate(e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-black uppercase text-[#161616] mb-2 tracking-widest">Reason</label>
+                    <select
+                      value={newReason}
+                      onChange={(e) => setNewReason(e.target.value)}
+                      className="w-full bg-white border-2 border-[#e5e4e0] rounded-xl px-4 py-3 focus:outline-none focus:border-[#c0563b] text-[#161616] font-bold"
+                    >
+                      <option value="">Select a reason</option>
+                      <option value="work">Work event</option>
+                      <option value="social">Social event</option>
+                      <option value="travel">Travel</option>
+                      <option value="special">Special occasion</option>
+                      <option value="other">Other</option>
+                    </select>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button variant="primary" onClick={addCustomDate} disabled={!newDate || !newReason}>Add</Button>
+                    <Button variant="ghost" onClick={() => setShowAddDate(false)}>Cancel</Button>
+                  </div>
+                </div>
+              )}
+
+              {/* Show added custom dates */}
+              {customDates.length > 0 && (
+                <div className="mt-4 space-y-2">
+                  {customDates.map((cd, i) => (
+                    <div key={i} className="flex items-center justify-between bg-white rounded-xl p-3 border border-[#e5e4e0]">
+                      <div>
+                        <span className="font-bold text-sm text-[#161616]">{new Date(cd.date).toLocaleDateString()}</span>
+                        <span className="text-xs text-slate-400 ml-2">{cd.reason}</span>
+                      </div>
+                      <button onClick={() => removeCustomDate(i)} className="text-slate-400 hover:text-red-500">
+                        <span className="iconify" data-icon="solar:close-circle-bold"></span>
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         )}
 
         <div className="pt-8 flex justify-between items-center">
-          <Button variant="ghost" onClick={() => step > 1 ? setStep(step - 1) : setStep(0)}>Back</Button>
-          {step < 4 ? (
+          <Button variant="ghost" onClick={() => {
+            if (step === 1 && path) {
+              setPath(null);
+            } else if (step > 1) {
+              setStep(step - 1);
+            } else {
+              setStep(0);
+            }
+          }}>Back</Button>
+          {step < 3 ? (
             <Button variant="dark" onClick={nextStep} disabled={step === 1 && !profile.name}>Continue</Button>
           ) : (
             <Button variant="primary" onClick={finish} className="px-10">Get My Schedule</Button>
