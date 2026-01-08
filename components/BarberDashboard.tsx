@@ -501,12 +501,12 @@ export const BarberDashboard: React.FC = () => {
           {/* Notifications List */}
           <div className="lg:col-span-5 space-y-4">
             <h2 className="text-sm font-black uppercase tracking-widest text-slate-400">Notifications</h2>
-            <div className="space-y-2">
+            <div className="space-y-2 relative z-10">
               {notifications.map(notif => (
                 <div
                   key={notif.id}
-                  onClick={() => { setSelectedNotificationId(notif.id); markAsRead(notif.id); setSelectedClientId(notif.clientId); }}
-                  className={`p-4 rounded-2xl border-2 transition-all cursor-pointer ${selectedNotificationId === notif.id ? 'bg-white border-[#c0563b]' : notif.read ? 'bg-white/50 border-transparent hover:border-[#e5e4e0]' : 'bg-white border-[#e5e4e0]'}`}
+                  onClick={(e) => { e.preventDefault(); e.stopPropagation(); setSelectedNotificationId(notif.id); markAsRead(notif.id); setSelectedClientId(notif.clientId); }}
+                  className={`p-4 rounded-2xl border-2 transition-all cursor-pointer relative ${selectedNotificationId === notif.id ? 'bg-white border-[#c0563b] shadow-lg' : notif.read ? 'bg-white/50 border-transparent hover:border-[#e5e4e0]' : 'bg-white border-[#e5e4e0] hover:shadow-md'}`}
                 >
                   <div className="flex items-start gap-3">
                     <div className="relative">
@@ -668,12 +668,12 @@ export const BarberDashboard: React.FC = () => {
           {/* Clients List */}
           <div className="lg:col-span-4 space-y-4">
             <h2 className="text-sm font-black uppercase tracking-widest text-slate-400">All Clients ({clients.length})</h2>
-            <div className="space-y-2">
+            <div className="space-y-2 relative z-10">
               {clients.map(client => (
                 <div
                   key={client.id}
-                  onClick={() => { setSelectedClientId(client.id); setSelectedNotificationId(null); }}
-                  className={`p-4 rounded-2xl border-2 transition-all cursor-pointer group ${selectedClientId === client.id && mainTab === 'clients' ? 'bg-white border-[#c0563b] shadow-lg' : 'bg-white/50 border-transparent hover:border-[#e5e4e0] hover:bg-white hover:shadow-md'}`}
+                  onClick={(e) => { e.preventDefault(); e.stopPropagation(); setSelectedClientId(client.id); setSelectedNotificationId(null); }}
+                  className={`p-4 rounded-2xl border-2 transition-all cursor-pointer group relative ${selectedClientId === client.id && mainTab === 'clients' ? 'bg-white border-[#c0563b] shadow-lg' : 'bg-white/50 border-transparent hover:border-[#e5e4e0] hover:bg-white hover:shadow-md'}`}
                 >
                   <div className="flex items-center gap-3">
                     <img src={client.avatar} className="w-12 h-12 rounded-xl object-cover group-hover:scale-105 transition-transform" alt={client.name} />
