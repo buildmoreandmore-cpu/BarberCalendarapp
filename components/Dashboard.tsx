@@ -10,6 +10,27 @@ interface DashboardProps {
   onRefresh: () => void;
 }
 
+// Mock connected barber data
+const CONNECTED_BARBER = {
+  name: 'James Wilson',
+  shop: "James' Cuts",
+  avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=100&auto=format&fit=crop',
+  rating: 4.9,
+  clientSince: 'January 2026'
+};
+
+// Mock booked appointments
+const BOOKED_APPOINTMENTS = [
+  {
+    id: '1',
+    date: '2026-01-12',
+    time: '10:00 AM',
+    service: 'Haircut',
+    status: 'confirmed' as const,
+    barberName: 'James Wilson'
+  }
+];
+
 // Fallback demo recommendations when API is unavailable
 const DEMO_RECOMMENDATIONS: RecommendedSlot[] = [
   {
@@ -90,6 +111,64 @@ export const Dashboard: React.FC<DashboardProps> = ({ state, onRefresh }) => {
 
   return (
     <div className="max-w-4xl mx-auto px-6 py-12 space-y-8">
+      {/* Connected Barber Banner */}
+      <section className="bg-white rounded-2xl p-4 border border-[#e5e4e0] flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <img
+            src={CONNECTED_BARBER.avatar}
+            alt={CONNECTED_BARBER.name}
+            className="w-12 h-12 rounded-full object-cover"
+          />
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-bold text-[#161616]">{CONNECTED_BARBER.name}</span>
+              <span className="bg-emerald-100 text-emerald-700 text-[10px] font-bold px-2 py-0.5 rounded-full">Connected</span>
+            </div>
+            <span className="text-xs text-slate-400">{CONNECTED_BARBER.shop}</span>
+          </div>
+        </div>
+        <div className="flex items-center gap-2 text-sm">
+          <span className="iconify text-yellow-500" data-icon="solar:star-bold"></span>
+          <span className="font-bold text-[#161616]">{CONNECTED_BARBER.rating}</span>
+        </div>
+      </section>
+
+      {/* Upcoming Appointments */}
+      {BOOKED_APPOINTMENTS.length > 0 && (
+        <section className="bg-[#f3f2ee] rounded-2xl p-6 border border-[#e5e4e0]">
+          <h3 className="text-sm font-black uppercase tracking-widest text-slate-400 mb-4">Your Appointments</h3>
+          <div className="space-y-3">
+            {BOOKED_APPOINTMENTS.map(apt => (
+              <div key={apt.id} className="bg-white rounded-xl p-4 border border-[#e5e4e0] flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-xl bg-[#c0563b] flex items-center justify-center text-white">
+                    <span className="iconify text-2xl" data-icon="solar:calendar-bold"></span>
+                  </div>
+                  <div>
+                    <div className="font-bold text-[#161616]">{formatDate(apt.date)}</div>
+                    <div className="text-sm text-slate-500">{apt.time} • {apt.service}</div>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <span className={`text-xs font-bold px-3 py-1 rounded-full ${
+                    apt.status === 'confirmed'
+                      ? 'bg-emerald-100 text-emerald-700'
+                      : apt.status === 'pending'
+                      ? 'bg-yellow-100 text-yellow-700'
+                      : 'bg-slate-100 text-slate-600'
+                  }`}>
+                    {apt.status === 'confirmed' ? 'Confirmed' : apt.status === 'pending' ? 'Pending' : apt.status}
+                  </span>
+                  <button className="text-slate-400 hover:text-[#c0563b]">
+                    <span className="iconify text-xl" data-icon="solar:menu-dots-bold"></span>
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
       {/* Booking Confirmation Success */}
       {bookedSlot && (
         <div className="bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-[32px] p-8 text-white text-center animate-fade-in-up">

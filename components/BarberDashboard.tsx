@@ -212,6 +212,17 @@ export const BarberDashboard: React.FC = () => {
   const [selectedNotificationId, setSelectedNotificationId] = useState<string | null>(null);
   const [showConfirmation, setShowConfirmation] = useState<string | null>(null);
   const [calendarMonth, setCalendarMonth] = useState(0); // 0 = January, 1 = February, etc.
+  const [showInviteModal, setShowInviteModal] = useState(false);
+  const [inviteLinkCopied, setInviteLinkCopied] = useState(false);
+
+  // Mock invite link
+  const inviteLink = 'https://lineup.app/join/james-cuts-23';
+
+  const copyInviteLink = () => {
+    navigator.clipboard.writeText(inviteLink);
+    setInviteLinkCopied(true);
+    setTimeout(() => setInviteLinkCopied(false), 2000);
+  };
 
   const selectedClient = clients.find(c => c.id === selectedClientId);
   const selectedNotification = notifications.find(n => n.id === selectedNotificationId);
@@ -313,8 +324,64 @@ export const BarberDashboard: React.FC = () => {
               Calendar
             </button>
           </div>
+          <Button variant="primary" onClick={() => setShowInviteModal(true)} className="flex items-center gap-2">
+            <span className="iconify" data-icon="solar:user-plus-bold"></span>
+            Invite Client
+          </Button>
         </div>
       </div>
+
+      {/* Invite Client Modal */}
+      {showInviteModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" onClick={() => setShowInviteModal(false)}>
+          <div className="bg-white rounded-3xl p-8 max-w-md w-full mx-4 shadow-2xl" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold text-[#161616]">Invite a Client</h2>
+              <button onClick={() => setShowInviteModal(false)} className="text-slate-400 hover:text-slate-600">
+                <span className="iconify text-2xl" data-icon="solar:close-circle-bold"></span>
+              </button>
+            </div>
+
+            <p className="text-slate-500 mb-6">Share this link with your client. They'll complete a quick quiz and connect directly with you.</p>
+
+            <div className="bg-[#f3f2ee] rounded-2xl p-4 mb-4">
+              <label className="block text-[10px] font-black uppercase text-slate-400 mb-2">Your invite link</label>
+              <div className="flex items-center gap-2">
+                <input
+                  type="text"
+                  readOnly
+                  value={inviteLink}
+                  className="flex-1 bg-white border border-[#e5e4e0] rounded-xl px-4 py-3 text-sm font-mono text-[#161616]"
+                />
+                <button
+                  onClick={copyInviteLink}
+                  className={`px-4 py-3 rounded-xl font-bold text-sm transition-all ${inviteLinkCopied ? 'bg-emerald-500 text-white' : 'bg-[#161616] text-white hover:bg-[#333]'}`}
+                >
+                  {inviteLinkCopied ? 'Copied!' : 'Copy'}
+                </button>
+              </div>
+            </div>
+
+            <div className="flex gap-3">
+              <button className="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-[#e5e4e0] text-sm font-bold text-[#161616] hover:bg-[#f3f2ee] transition-all">
+                <span className="iconify text-lg" data-icon="solar:letter-bold"></span>
+                Email
+              </button>
+              <button className="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-[#e5e4e0] text-sm font-bold text-[#161616] hover:bg-[#f3f2ee] transition-all">
+                <span className="iconify text-lg" data-icon="solar:chat-round-dots-bold"></span>
+                Text
+              </button>
+            </div>
+
+            <div className="mt-6 pt-6 border-t border-[#e5e4e0]">
+              <div className="flex items-start gap-3 text-sm text-slate-500">
+                <span className="iconify text-[#c0563b] text-lg flex-shrink-0 mt-0.5" data-icon="solar:info-circle-bold"></span>
+                <span>When your client signs up, you'll get a notification with their quiz answers and preferences.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Stats Row */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
