@@ -25,6 +25,35 @@ export const Consultation: React.FC<ConsultationProps> = ({ onComplete, onClient
   });
   const [selectedEvents, setSelectedEvents] = useState<string[]>([]);
 
+  // Path selection and custom dates state (must be at top level for React hooks)
+  const [path, setPath] = useState<'barber' | 'stylist' | null>(null);
+  const [selectedServices, setSelectedServices] = useState<string[]>([]);
+  const [customDates, setCustomDates] = useState<{date: string, reason: string}[]>([]);
+  const [showAddDate, setShowAddDate] = useState(false);
+  const [newDate, setNewDate] = useState('');
+  const [newReason, setNewReason] = useState('');
+
+  const toggleService = (serviceId: string) => {
+    setSelectedServices(prev =>
+      prev.includes(serviceId)
+        ? prev.filter(s => s !== serviceId)
+        : [...prev, serviceId]
+    );
+  };
+
+  const addCustomDate = () => {
+    if (newDate && newReason) {
+      setCustomDates(prev => [...prev, { date: newDate, reason: newReason }]);
+      setNewDate('');
+      setNewReason('');
+      setShowAddDate(false);
+    }
+  };
+
+  const removeCustomDate = (index: number) => {
+    setCustomDates(prev => prev.filter((_, i) => i !== index));
+  };
+
   const toggleEvent = (eventId: string) => {
     if (eventId === 'none') {
       setSelectedEvents([]);
@@ -601,35 +630,6 @@ export const Consultation: React.FC<ConsultationProps> = ({ onComplete, onClient
       </div>
     );
   }
-
-  // State for path selection and custom dates
-  const [path, setPath] = useState<'barber' | 'stylist' | null>(null);
-  const [selectedServices, setSelectedServices] = useState<string[]>([]);
-  const [customDates, setCustomDates] = useState<{date: string, reason: string}[]>([]);
-  const [showAddDate, setShowAddDate] = useState(false);
-  const [newDate, setNewDate] = useState('');
-  const [newReason, setNewReason] = useState('');
-
-  const toggleService = (serviceId: string) => {
-    setSelectedServices(prev =>
-      prev.includes(serviceId)
-        ? prev.filter(s => s !== serviceId)
-        : [...prev, serviceId]
-    );
-  };
-
-  const addCustomDate = () => {
-    if (newDate && newReason) {
-      setCustomDates(prev => [...prev, { date: newDate, reason: newReason }]);
-      setNewDate('');
-      setNewReason('');
-      setShowAddDate(false);
-    }
-  };
-
-  const removeCustomDate = (index: number) => {
-    setCustomDates(prev => prev.filter((_, i) => i !== index));
-  };
 
   // Total steps based on path
   const totalSteps = path ? 3 : 0;
