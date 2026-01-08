@@ -215,6 +215,7 @@ export const BarberDashboard: React.FC = () => {
   const [showInviteModal, setShowInviteModal] = useState(false);
   const [inviteLinkCopied, setInviteLinkCopied] = useState(false);
   const [selectedAppointment, setSelectedAppointment] = useState<ScheduledAppointment | null>(null);
+  const [debugClick, setDebugClick] = useState<string | null>(null);
 
   // Mock invite link
   const inviteLink = 'https://lineup.app/join/james-cuts-23';
@@ -500,13 +501,15 @@ export const BarberDashboard: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* Notifications List */}
           <div className="lg:col-span-5 space-y-4">
-            <h2 className="text-sm font-black uppercase tracking-widest text-slate-400">Notifications</h2>
+            <h2 className="text-sm font-black uppercase tracking-widest text-slate-400">
+              Notifications {debugClick && <span className="text-emerald-500 ml-2">✓ Clicked: {debugClick}</span>}
+            </h2>
             <div className="space-y-2 relative z-10">
               {notifications.map(notif => (
                 <button
                   key={notif.id}
                   type="button"
-                  onClick={() => { setSelectedNotificationId(notif.id); markAsRead(notif.id); setSelectedClientId(notif.clientId); }}
+                  onClick={() => { setDebugClick(notif.id); setSelectedNotificationId(notif.id); markAsRead(notif.id); setSelectedClientId(notif.clientId); }}
                   className={`w-full text-left p-4 rounded-2xl border-2 transition-all cursor-pointer relative ${selectedNotificationId === notif.id ? 'bg-white border-[#c0563b] shadow-lg' : notif.read ? 'bg-white/50 border-transparent hover:border-[#e5e4e0]' : 'bg-white border-[#e5e4e0] hover:shadow-md'}`}
                 >
                   <div className="flex items-start gap-3">
