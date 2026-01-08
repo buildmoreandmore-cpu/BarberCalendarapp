@@ -602,23 +602,25 @@ export const Consultation: React.FC<ConsultationProps> = ({ onComplete, onClient
     );
   }
 
-  // 3-step Consultation (Lifestyle-focused with better curation)
+  // 4-step Consultation (Personal & Lifestyle-focused)
   return (
     <div className="max-w-xl mx-auto py-24 px-6">
       <div className="mb-12">
         <div className="flex items-center gap-2 mb-4">
           <div className="h-1 w-12 bg-[#c0563b] rounded"></div>
-          <span className="text-xs font-black uppercase tracking-widest text-[#555]">Quick Setup {step}/3</span>
+          <span className="text-xs font-black uppercase tracking-widest text-[#555]">Quick Setup {step}/4</span>
         </div>
         <h1 className="text-5xl font-extrabold text-[#161616] mb-4 tracking-tight">
-          {step === 1 && "Let's get you set up."}
-          {step === 2 && "What's your lifestyle like?"}
-          {step === 3 && "Any big moments coming up?"}
+          {step === 1 && "First, tell us about you."}
+          {step === 2 && "How do you like to stay fresh?"}
+          {step === 3 && "What does your life look like?"}
+          {step === 4 && "Any special moments coming up?"}
         </h1>
         <p className="text-lg text-slate-500">
-          {step === 1 && "We'll use this to recommend the perfect booking times."}
-          {step === 2 && "This helps us understand when you need to look your best."}
-          {step === 3 && "We'll make sure you're fresh for what matters."}
+          {step === 1 && "We'll remember your important dates so you always look your best."}
+          {step === 2 && "This helps us find your perfect rhythm."}
+          {step === 3 && "We'll work around your schedule, not the other way around."}
+          {step === 4 && "We'll make sure you're looking sharp when it matters most."}
         </p>
       </div>
 
@@ -626,7 +628,7 @@ export const Consultation: React.FC<ConsultationProps> = ({ onComplete, onClient
         {step === 1 && (
           <div className="space-y-6">
             <div>
-              <label className="block text-xs font-black uppercase text-[#161616] mb-2 tracking-widest">Your Name</label>
+              <label className="block text-xs font-black uppercase text-[#161616] mb-2 tracking-widest">What should we call you?</label>
               <input
                 type="text"
                 placeholder="Marcus"
@@ -636,7 +638,36 @@ export const Consultation: React.FC<ConsultationProps> = ({ onComplete, onClient
               />
             </div>
             <div>
-              <label className="block text-xs font-black uppercase text-[#161616] mb-3 tracking-widest">How often do you typically get a cut?</label>
+              <label className="block text-xs font-black uppercase text-[#161616] mb-2 tracking-widest">
+                <span className="flex items-center gap-2">
+                  <span className="iconify text-[#c0563b]" data-icon="solar:cake-bold-duotone"></span>
+                  When's your birthday?
+                </span>
+              </label>
+              <input
+                type="date"
+                className="w-full bg-white border-2 border-[#e5e4e0] rounded-2xl px-6 py-4 focus:outline-none focus:border-[#c0563b] text-[#161616] font-bold"
+                onChange={(e) => setProfile({ ...profile, birthday: e.target.value } as any)}
+              />
+              <p className="text-xs text-slate-400 mt-2">We'll make sure you're fresh for your big day every year</p>
+            </div>
+            <div>
+              <label className="block text-xs font-black uppercase text-[#161616] mb-2 tracking-widest">When was your last haircut?</label>
+              <input
+                type="date"
+                value={profile.lastCutDate}
+                className="w-full bg-white border-2 border-[#e5e4e0] rounded-2xl px-6 py-4 focus:outline-none focus:border-[#c0563b] text-[#161616] font-bold"
+                onChange={(e) => setProfile({ ...profile, lastCutDate: e.target.value })}
+              />
+              <p className="text-xs text-slate-400 mt-2">This helps us calculate your ideal timing</p>
+            </div>
+          </div>
+        )}
+
+        {step === 2 && (
+          <div className="space-y-6">
+            <div>
+              <label className="block text-xs font-black uppercase text-[#161616] mb-3 tracking-widest">How often do you like to get a cut?</label>
               <div className="grid grid-cols-1 gap-3">
                 {[
                   { id: 'fast', label: 'Every week', desc: 'I like to stay tight at all times', icon: 'solar:fire-bold-duotone' },
@@ -657,10 +688,32 @@ export const Consultation: React.FC<ConsultationProps> = ({ onComplete, onClient
                 ))}
               </div>
             </div>
+            <div>
+              <label className="block text-xs font-black uppercase text-[#161616] mb-3 tracking-widest">How important is staying fresh to you?</label>
+              <div className="grid grid-cols-1 gap-3">
+                {[
+                  { id: 'low', label: 'Pretty chill about it', desc: "I'm flexible, it's not a big deal", icon: 'solar:sun-2-bold-duotone' },
+                  { id: 'medium', label: 'I care about my look', desc: 'Looking good is part of who I am', icon: 'solar:mirror-bold-duotone' },
+                  { id: 'high', label: 'Never caught slipping', desc: 'First impressions are everything', icon: 'solar:crown-bold-duotone' }
+                ].map((priority) => (
+                  <button
+                    key={priority.id}
+                    onClick={() => setProfile({ ...profile, hairType: priority.id as any })}
+                    className={`p-5 rounded-2xl border-2 text-left transition-all flex items-center gap-4 ${profile.hairType === priority.id ? 'border-[#c0563b] bg-[#c0563b]/5 text-[#161616]' : 'border-[#e5e4e0] bg-white text-[#555] hover:border-[#c0563b]/30'}`}
+                  >
+                    <span className={`iconify text-2xl ${profile.hairType === priority.id ? 'text-[#c0563b]' : 'text-slate-400'}`} data-icon={priority.icon}></span>
+                    <div>
+                      <div className="font-bold">{priority.label}</div>
+                      <div className="text-sm opacity-60">{priority.desc}</div>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
         )}
 
-        {step === 2 && (
+        {step === 3 && (
           <div className="space-y-6">
             <div>
               <label className="block text-xs font-black uppercase text-[#161616] mb-3 tracking-widest">When do you need to look your sharpest?</label>
@@ -668,7 +721,7 @@ export const Consultation: React.FC<ConsultationProps> = ({ onComplete, onClient
                 {[
                   { id: 'busy-midweek', label: 'Weekdays for work', desc: 'Meetings, clients, presentations', icon: 'solar:case-round-bold-duotone' },
                   { id: 'social-weekend', label: 'Weekends for social', desc: 'Dates, events, going out with friends', icon: 'solar:sun-bold-duotone' },
-                  { id: 'consistent', label: 'Always fresh, no exceptions', desc: "I never want to look rough", icon: 'solar:star-bold-duotone' }
+                  { id: 'consistent', label: 'Always fresh, every day', desc: "I never want to look rough", icon: 'solar:star-bold-duotone' }
                 ].map((rhythm) => (
                   <button
                     key={rhythm.id}
@@ -685,20 +738,23 @@ export const Consultation: React.FC<ConsultationProps> = ({ onComplete, onClient
               </div>
             </div>
             <div>
-              <label className="block text-xs font-black uppercase text-[#161616] mb-3 tracking-widest">How much does looking fresh matter to you?</label>
-              <div className="grid grid-cols-3 gap-3">
+              <label className="block text-xs font-black uppercase text-[#161616] mb-3 tracking-widest">How often do you travel?</label>
+              <div className="grid grid-cols-1 gap-3">
                 {[
-                  { id: 'low', label: 'Casual', desc: "It's not a big deal" },
-                  { id: 'medium', label: 'Important', desc: 'I care about my appearance' },
-                  { id: 'high', label: 'Critical', desc: 'First impressions matter' }
-                ].map((priority) => (
+                  { id: 'rarely', label: 'Rarely or never', desc: 'I stay local most of the time', icon: 'solar:home-smile-bold-duotone' },
+                  { id: 'sometimes', label: 'A few times a year', desc: 'Occasional trips and vacations', icon: 'solar:suitcase-bold-duotone' },
+                  { id: 'often', label: 'Frequently', desc: 'I travel a lot for work or fun', icon: 'solar:airplane-bold-duotone' }
+                ].map((travel) => (
                   <button
-                    key={priority.id}
-                    onClick={() => setProfile({ ...profile, hairType: priority.id as any })}
-                    className={`p-4 rounded-2xl border-2 text-center transition-all ${profile.hairType === priority.id ? 'border-[#c0563b] bg-[#c0563b]/5 text-[#161616]' : 'border-[#e5e4e0] bg-white text-[#555] hover:border-[#c0563b]/30'}`}
+                    key={travel.id}
+                    onClick={() => setProfile({ ...profile, travelFrequency: travel.id } as any)}
+                    className={`p-5 rounded-2xl border-2 text-left transition-all flex items-center gap-4 ${(profile as any).travelFrequency === travel.id ? 'border-[#c0563b] bg-[#c0563b]/5 text-[#161616]' : 'border-[#e5e4e0] bg-white text-[#555] hover:border-[#c0563b]/30'}`}
                   >
-                    <div className="font-bold text-sm">{priority.label}</div>
-                    <div className="text-[10px] opacity-60 mt-1">{priority.desc}</div>
+                    <span className={`iconify text-2xl ${(profile as any).travelFrequency === travel.id ? 'text-[#c0563b]' : 'text-slate-400'}`} data-icon={travel.icon}></span>
+                    <div>
+                      <div className="font-bold">{travel.label}</div>
+                      <div className="text-sm opacity-60">{travel.desc}</div>
+                    </div>
                   </button>
                 ))}
               </div>
@@ -706,27 +762,22 @@ export const Consultation: React.FC<ConsultationProps> = ({ onComplete, onClient
           </div>
         )}
 
-        {step === 3 && (
+        {step === 4 && (
           <div className="space-y-6">
             <div>
-              <label className="block text-xs font-black uppercase text-[#161616] mb-2 tracking-widest">When was your last haircut?</label>
-              <input
-                type="date"
-                value={profile.lastCutDate}
-                className="w-full bg-white border-2 border-[#e5e4e0] rounded-2xl px-6 py-4 focus:outline-none focus:border-[#c0563b] text-[#161616] font-bold"
-                onChange={(e) => setProfile({ ...profile, lastCutDate: e.target.value })}
-              />
-              <p className="text-xs text-slate-400 mt-2">This helps us calculate your ideal timing</p>
-            </div>
-            <div>
-              <label className="block text-xs font-black uppercase text-[#161616] mb-3 tracking-widest">Any upcoming events? (Select all that apply)</label>
+              <label className="block text-xs font-black uppercase text-[#161616] mb-3 tracking-widest">Any important dates coming up?</label>
+              <p className="text-sm text-slate-500 mb-4">We'll make sure you're looking fresh for these moments</p>
               <div className="grid grid-cols-2 gap-3">
                 {[
+                  { id: 'anniversary', label: 'Anniversary', icon: 'solar:heart-bold-duotone' },
+                  { id: 'wedding', label: 'Wedding', icon: 'solar:crown-star-bold-duotone' },
+                  { id: 'vacation', label: 'Vacation', icon: 'solar:palm-tree-bold-duotone' },
                   { id: 'interview', label: 'Job interview', icon: 'solar:case-round-bold-duotone' },
-                  { id: 'wedding', label: 'Wedding', icon: 'solar:heart-bold-duotone' },
                   { id: 'date', label: 'First date', icon: 'solar:hearts-bold-duotone' },
-                  { id: 'trip', label: 'Trip/vacation', icon: 'solar:airplane-bold-duotone' },
+                  { id: 'reunion', label: 'Family reunion', icon: 'solar:users-group-rounded-bold-duotone' },
+                  { id: 'graduation', label: 'Graduation', icon: 'solar:square-academic-cap-bold-duotone' },
                   { id: 'photo', label: 'Photo shoot', icon: 'solar:camera-bold-duotone' },
+                  { id: 'party', label: 'Party/Event', icon: 'solar:confetti-bold-duotone' },
                   { id: 'none', label: 'Nothing specific', icon: 'solar:calendar-minimalistic-bold-duotone' }
                 ].map((event) => {
                   const isSelected = event.id === 'none'
@@ -751,14 +802,28 @@ export const Consultation: React.FC<ConsultationProps> = ({ onComplete, onClient
                   );
                 })}
               </div>
-              <p className="text-xs text-slate-400 mt-3">We'll remind you to book before these events</p>
             </div>
+
+            {/* Optional: Add specific date for an event */}
+            {selectedEvents.length > 0 && selectedEvents[0] !== 'none' && (
+              <div className="bg-[#fbeee0] rounded-2xl p-5 border-2 border-[#c0563b]/20">
+                <label className="block text-xs font-black uppercase text-[#c0563b] mb-2 tracking-widest">
+                  When's your {selectedEvents[0].replace('-', ' ')}?
+                </label>
+                <input
+                  type="date"
+                  className="w-full bg-white border-2 border-[#e5e4e0] rounded-xl px-4 py-3 focus:outline-none focus:border-[#c0563b] text-[#161616] font-bold"
+                  onChange={(e) => setProfile({ ...profile, upcomingEventDate: e.target.value } as any)}
+                />
+                <p className="text-xs text-[#c0563b]/70 mt-2">We'll schedule you 1-2 days before</p>
+              </div>
+            )}
           </div>
         )}
 
         <div className="pt-8 flex justify-between items-center">
           <Button variant="ghost" onClick={() => step > 1 ? setStep(step - 1) : setStep(0)}>Back</Button>
-          {step < 3 ? (
+          {step < 4 ? (
             <Button variant="dark" onClick={nextStep} disabled={step === 1 && !profile.name}>Continue</Button>
           ) : (
             <Button variant="primary" onClick={finish} className="px-10">Get My Schedule</Button>
