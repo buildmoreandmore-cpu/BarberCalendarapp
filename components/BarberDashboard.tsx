@@ -214,6 +214,7 @@ export const BarberDashboard: React.FC = () => {
   const [calendarMonth, setCalendarMonth] = useState(0); // 0 = January, 1 = February, etc.
   const [showInviteModal, setShowInviteModal] = useState(false);
   const [inviteLinkCopied, setInviteLinkCopied] = useState(false);
+  const [selectedAppointment, setSelectedAppointment] = useState<ScheduledAppointment | null>(null);
 
   // Mock invite link
   const inviteLink = 'https://lineup.app/join/james-cuts-23';
@@ -330,6 +331,97 @@ export const BarberDashboard: React.FC = () => {
           </Button>
         </div>
       </div>
+
+      {/* Appointment Detail Modal */}
+      {selectedAppointment && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" onClick={() => setSelectedAppointment(null)}>
+          <div className="bg-white rounded-3xl p-8 max-w-md w-full mx-4 shadow-2xl" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-3">
+                <img src={selectedAppointment.clientAvatar} className="w-14 h-14 rounded-2xl object-cover" alt={selectedAppointment.clientName} />
+                <div>
+                  <h2 className="text-xl font-bold text-[#161616]">{selectedAppointment.clientName}</h2>
+                  <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${
+                    selectedAppointment.status === 'confirmed' ? 'bg-emerald-100 text-emerald-600' :
+                    selectedAppointment.status === 'pending' ? 'bg-orange-100 text-orange-600' :
+                    'bg-[#fbeee0] text-[#c0563b]'
+                  }`}>
+                    {selectedAppointment.status === 'recommended' ? 'AI Recommended' : selectedAppointment.status}
+                  </span>
+                </div>
+              </div>
+              <button onClick={() => setSelectedAppointment(null)} className="text-slate-400 hover:text-slate-600">
+                <span className="iconify text-2xl" data-icon="solar:close-circle-bold"></span>
+              </button>
+            </div>
+
+            {/* Appointment Details */}
+            <div className="space-y-4">
+              <div className="bg-[#f3f2ee] rounded-2xl p-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <div className="text-[10px] font-black uppercase text-slate-400">Date</div>
+                    <div className="text-lg font-bold text-[#161616]">
+                      {new Date(selectedAppointment.date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
+                    </div>
+                  </div>
+                  <div>
+                    <div className="text-[10px] font-black uppercase text-slate-400">Time</div>
+                    <div className="text-lg font-bold text-[#161616]">{selectedAppointment.time}</div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-[#f3f2ee] rounded-2xl p-4">
+                <div className="text-[10px] font-black uppercase text-slate-400 mb-1">Service</div>
+                <div className="text-lg font-bold text-[#161616]">{selectedAppointment.service}</div>
+              </div>
+
+              {/* The WHY - prominently displayed */}
+              <div className="bg-[#fbeee0] rounded-2xl p-4 border-2 border-[#c0563b]/20">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="iconify text-[#c0563b]" data-icon="solar:lightbulb-bolt-bold"></span>
+                  <div className="text-[10px] font-black uppercase text-[#c0563b]">Why This Date</div>
+                </div>
+                <div className="text-[#161616] font-medium">{selectedAppointment.reason}</div>
+                {selectedAppointment.isAiRecommended && (
+                  <div className="flex items-center gap-1 mt-2 text-xs text-[#c0563b]">
+                    <span className="iconify" data-icon="solar:magic-stick-3-bold"></span>
+                    <span>AI-optimized based on client's lifestyle</span>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Actions */}
+            <div className="mt-6 flex gap-3">
+              {selectedAppointment.status === 'recommended' ? (
+                <>
+                  <Button variant="primary" className="flex-1" onClick={() => { approveAppointment(selectedAppointment.id); setSelectedAppointment(null); }}>
+                    Approve
+                  </Button>
+                  <Button variant="secondary" onClick={() => setSelectedAppointment(null)}>Decline</Button>
+                </>
+              ) : selectedAppointment.status === 'pending' ? (
+                <>
+                  <Button variant="primary" className="flex-1" onClick={() => { approveAppointment(selectedAppointment.id); setSelectedAppointment(null); }}>
+                    Confirm
+                  </Button>
+                  <Button variant="secondary" onClick={() => showToast('Reschedule request sent')}>Reschedule</Button>
+                </>
+              ) : (
+                <>
+                  <Button variant="secondary" className="flex-1" onClick={() => showToast('Reminder sent!')}>
+                    <span className="iconify mr-2" data-icon="solar:bell-bing-bold"></span>
+                    Send Reminder
+                  </Button>
+                  <Button variant="outline" onClick={() => setSelectedAppointment(null)}>Close</Button>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Invite Client Modal */}
       {showInviteModal && (
@@ -580,11 +672,11 @@ export const BarberDashboard: React.FC = () => {
               {clients.map(client => (
                 <div
                   key={client.id}
-                  onClick={() => setSelectedClientId(client.id)}
-                  className={`p-4 rounded-2xl border-2 transition-all cursor-pointer ${selectedClientId === client.id ? 'bg-white border-[#c0563b]' : 'bg-white/50 border-transparent hover:border-[#e5e4e0]'}`}
+                  onClick={() => { setSelectedClientId(client.id); setSelectedNotificationId(null); }}
+                  className={`p-4 rounded-2xl border-2 transition-all cursor-pointer group ${selectedClientId === client.id && mainTab === 'clients' ? 'bg-white border-[#c0563b] shadow-lg' : 'bg-white/50 border-transparent hover:border-[#e5e4e0] hover:bg-white hover:shadow-md'}`}
                 >
                   <div className="flex items-center gap-3">
-                    <img src={client.avatar} className="w-12 h-12 rounded-xl object-cover" alt={client.name} />
+                    <img src={client.avatar} className="w-12 h-12 rounded-xl object-cover group-hover:scale-105 transition-transform" alt={client.name} />
                     <div className="flex-1">
                       <h4 className="font-bold text-[#161616]">{client.name}</h4>
                       <p className="text-xs text-slate-500">{client.preferredCadence} • Last: {client.lastVisit}</p>
@@ -786,7 +878,8 @@ export const BarberDashboard: React.FC = () => {
                       {appointments.slice(0, 2).map(apt => (
                         <div
                           key={apt.id}
-                          className={`text-[9px] font-bold px-1.5 py-0.5 rounded truncate ${apt.status === 'confirmed' ? 'bg-emerald-500 text-white' : apt.status === 'pending' ? 'bg-orange-500 text-white' : 'bg-[#c0563b] text-white'}`}
+                          onClick={(e) => { e.stopPropagation(); setSelectedAppointment(apt); }}
+                          className={`text-[9px] font-bold px-1.5 py-0.5 rounded truncate cursor-pointer hover:opacity-80 transition-opacity ${apt.status === 'confirmed' ? 'bg-emerald-500 text-white' : apt.status === 'pending' ? 'bg-orange-500 text-white' : 'bg-[#c0563b] text-white'}`}
                         >
                           {apt.clientName.split(' ')[0]}
                         </div>
@@ -809,7 +902,11 @@ export const BarberDashboard: React.FC = () => {
                 .filter(s => s.date.startsWith(`2026-${String(calendarMonth + 1).padStart(2, '0')}`))
                 .sort((a, b) => a.date.localeCompare(b.date))
                 .map(apt => (
-                  <div key={apt.id} className="flex items-center justify-between p-4 bg-[#f3f2ee] rounded-xl">
+                  <div
+                    key={apt.id}
+                    onClick={() => setSelectedAppointment(apt)}
+                    className="flex items-center justify-between p-4 bg-[#f3f2ee] rounded-xl cursor-pointer hover:bg-[#e5e4e0] transition-colors"
+                  >
                     <div className="flex items-center gap-4">
                       <img src={apt.clientAvatar} className="w-10 h-10 rounded-xl object-cover" alt={apt.clientName} />
                       <div>
@@ -824,7 +921,7 @@ export const BarberDashboard: React.FC = () => {
                         </div>
                       )}
                       {apt.status === 'recommended' ? (
-                        <Button variant="primary" className="text-xs px-3 py-1.5" onClick={() => approveAppointment(apt.id)}>Approve</Button>
+                        <Button variant="primary" className="text-xs px-3 py-1.5" onClick={(e) => { e.stopPropagation(); approveAppointment(apt.id); }}>Approve</Button>
                       ) : (
                         <span className={`text-xs font-bold px-2 py-1 rounded-full ${apt.status === 'confirmed' ? 'bg-emerald-100 text-emerald-600' : 'bg-orange-100 text-orange-600'}`}>
                           {apt.status}
