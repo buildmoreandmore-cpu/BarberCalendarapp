@@ -71,6 +71,8 @@ export const Dashboard: React.FC<DashboardProps> = ({ state, onRefresh }) => {
   const [selectedSlot, setSelectedSlot] = useState<RecommendedSlot | null>(null);
   const [bookedSlot, setBookedSlot] = useState<RecommendedSlot | null>(null);
   const [calendarDropdownId, setCalendarDropdownId] = useState<string | null>(null);
+  const [upcomingAppointments, setUpcomingAppointments] = useState(BOOKED_APPOINTMENTS);
+  const [dynamicRecommendations, setDynamicRecommendations] = useState<RecommendedSlot[]>([]);
 
   // Notification preferences
   const [notifPrefs, setNotifPrefs] = useState({
@@ -79,6 +81,38 @@ export const Dashboard: React.FC<DashboardProps> = ({ state, onRefresh }) => {
     reminder24h: true,
     reminder1h: true
   });
+
+  // Generate next recommendations based on client's cadence
+  const generateNextRecommendations = (fromDate: string, cadence: string) => {
+    const baseDate = new Date(fromDate);
+    const newRecs: RecommendedSlot[] = [];
+
+    // Determine days between appointments based on cadence
+    const daysToAdd = cadence === 'fast' ? 7 : cadence === 'average' ? 14 : 28;
+
+    // Generate 4-5 future recommendations
+    for (let i = 1; i <= 5; i++) {
+      const nextDate = new Date(baseDate);
+      nextDate.setDate(nextDate.getDate() + (daysToAdd * i));
+
+      const reasons = [
+        `Right on your ${daysToAdd === 7 ? 'weekly' : daysToAdd === 14 ? '2-week' : 'monthly'} cycle`,
+        'Perfect timing to stay fresh',
+        'Optimal based on your lifestyle',
+        'Great time for a touch-up',
+        'Stay looking sharp'
+      ];
+
+      newRecs.push({
+        date: nextDate.toISOString().split('T')[0],
+        reason: reasons[i - 1],
+        score: i === 1 ? 'optimal' : 'good',
+        event: i === 1 ? 'Next recommended' : 'Future option'
+      });
+    }
+
+    return newRecs;
+  };
 
   // Generate Google Calendar link
   const getGoogleCalendarLink = (apt: typeof BOOKED_APPOINTMENTS[0]) => {
@@ -133,8 +167,12 @@ END:VCALENDAR`;
     setCalendarDropdownId(null);
   };
 
-  // Use API recommendations if available, otherwise use demo data
-  const recommendations = state.recommendations.length > 0 ? state.recommendations : DEMO_RECOMMENDATIONS;
+  // Use dynamic recommendations after booking, API recommendations, or demo data
+  const recommendations = dynamicRecommendations.length > 0
+    ? dynamicRecommendations
+    : state.recommendations.length > 0
+      ? state.recommendations
+      : DEMO_RECOMMENDATIONS;
 
   useEffect(() => {
     const fetchCommentary = async () => {
@@ -162,6 +200,22 @@ END:VCALENDAR`;
 
   const handleConfirmBooking = () => {
     if (selectedSlot) {
+      // Add to upcoming appointments
+      const newAppointment = {
+        id: `apt-${Date.now()}`,
+        date: selectedSlot.date,
+        time: '10:00 AM', // Default time, would be selected in real app
+        service: 'Haircut',
+        status: 'confirmed' as const,
+        barberName: CONNECTED_BARBER.name
+      };
+      setUpcomingAppointments(prev => [...prev, newAppointment]);
+
+      // Generate next recommendations based on booked date and user's cadence
+      const cadence = state.profile?.growthRate || 'average';
+      const nextRecs = generateNextRecommendations(selectedSlot.date, cadence);
+      setDynamicRecommendations(nextRecs);
+
       setBookedSlot(selectedSlot);
       setSelectedSlot(null);
     }
@@ -196,11 +250,11 @@ END:VCALENDAR`;
       </section>
 
       {/* Upcoming Appointments */}
-      {BOOKED_APPOINTMENTS.length > 0 && (
+      {upcomingAppointments.length > 0 && (
         <section className="bg-[#f3f2ee] rounded-2xl p-6 border border-[#e5e4e0]">
           <h3 className="text-sm font-black uppercase tracking-widest text-slate-400 mb-4">Your Appointments</h3>
           <div className="space-y-3">
-            {BOOKED_APPOINTMENTS.map(apt => (
+            {upcomingAppointments.map(apt => (
               <div key={apt.id} className="bg-white rounded-xl p-4 border border-[#e5e4e0] flex items-center justify-between">
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 rounded-xl bg-[#c0563b] flex items-center justify-center text-white">
@@ -267,11 +321,21 @@ END:VCALENDAR`;
           <h2 className="text-2xl font-bold mb-2">You're booked!</h2>
           <p className="text-emerald-100 mb-1">{formatDate(bookedSlot.date)}</p>
           <p className="text-sm text-emerald-200">{bookedSlot.reason}</p>
+
+          {/* Show next recommendation preview */}
+          {dynamicRecommendations.length > 0 && (
+            <div className="mt-6 pt-6 border-t border-white/20">
+              <p className="text-xs uppercase tracking-widest text-emerald-200 mb-2">Your next recommended visit</p>
+              <p className="text-lg font-bold">{formatDate(dynamicRecommendations[0].date)}</p>
+              <p className="text-sm text-emerald-200">{dynamicRecommendations[0].reason}</p>
+            </div>
+          )}
+
           <button
             onClick={() => setBookedSlot(null)}
             className="mt-6 text-xs font-bold uppercase tracking-widest text-white/70 hover:text-white"
           >
-            View other options
+            View all upcoming recommendations
           </button>
         </div>
       )}
